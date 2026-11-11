@@ -1,0 +1,66 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Prepare web files (inject bridge)
+        run: |
+          mkdir -p www
+          cp index.html www/index.html
+          cp app-bridge.js www/app-bridge.js
+          sed -i 's#</body>#<script src="app-bridge.js"></script></body>#' www/index.html
+
+      - name: Make icon
+        run: |
+          mkdir -p assets
+          if [ -f icon.png ]; then
+            cp icon.png assets/icon.png
+          else
+            pip install pillow
+            python tools/make_icon.py assets/icon.png
+          fi
+
+      - name: Add Android platform
+        run: npx cap add android
+
+      - name: Add permissions
+        run: |
+          MF=android/app/src/main/AndroidManifest.xml
+          sed -i 's#<application#<uses-permission android:name="android.permission.CAMERA"/>\n    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>\n    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>\n    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>\n    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>\n    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29"/>\n    <uses-feature android:name="android.hardware.camera" android:required="false"/>\n    <application#' $MF
+
+      - name: Generate icons
+        run: npx capacitor-assets generate --android --iconBackgroundColor '#ffd23f' --iconBackgroundColorDark '#ffd23f'
+
+      - name: Sync
+        run: npx cap sync android
+
+      - name: Build APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: DanceShorts-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
