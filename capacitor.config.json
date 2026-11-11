@@ -1,0 +1,12 @@
+{
+  "appId": "com.danceshorts.studio",
+  "appName": "Dance Shorts Studio",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https",
+    "allowNavigation": ["*.hf.space"]
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dance Shorts Studio</title>
+<style>
+  :root {
+    --paper:#fff8ec; --ink:#1d1b26; --white:#ffffff;
+    --yellow:#ffd23f; --pink:#ff6b9d; --blue:#4cc9f0; --green:#7bd88f; --purple:#b69cff; --orange:#ff9f5a;
+    --muted:#6b6678; --line:3px solid var(--ink);
+    --shadow:5px 5px 0 var(--ink);
+    --r:16px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;color:var(--ink);
+    font-family:"Trebuchet MS","Segoe UI",system-ui,Roboto,sans-serif;
+    background-color:var(--paper);
+    background-image:radial-gradient(#e9d9b8 1.5px, transparent 1.5px);
+    background-size:22px 22px;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:18px 14px 60px}
+
+  /* ---------- header ---------- */
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+  .logo{display:flex;align-items:center;gap:12px}
+  .logo .badge{
+    width:54px;height:54px;border:var(--line);border-radius:14px;background:var(--yellow);
+    box-shadow:var(--shadow);display:grid;place-items:center;font-size:28px;transform:rotate(-6deg);flex:none}
+  h1{margin:0;font-size:clamp(22px,5vw,32px);line-height:1;letter-spacing:-.5px}
+  h1 em{font-style:normal;background:var(--pink);padding:0 8px;border:var(--line);border-radius:10px;display:inline-block;transform:rotate(2deg);margin-left:2px}
+  .tag{font-size:13px;color:var(--muted);margin-top:6px}
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;border:var(--line);border-radius:999px;background:var(--white);
+    padding:7px 14px;font-weight:700;font-size:13px;box-shadow:3px 3px 0 var(--ink)}
+  .dot{width:11px;height:11px;border-radius:50%;background:#bbb;border:2px solid var(--ink)}
+  .pill.ok .dot{background:var(--green)} .pill.wait .dot{background:var(--yellow);animation:blink 1s infinite} .pill.bad .dot{background:var(--pink)}
+  @keyframes blink{50%{opacity:.25}}
+  .pill button{padding:3px 10px;font-size:12px;box-shadow:none;border-width:2px}
+
+  /* ---------- cards ---------- */
+  .card{background:var(--white);border:var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:22px;position:relative}
+  .card h2{margin:0 0 4px;font-size:18px;display:flex;align-items:center;gap:10px}
+  .num{width:30px;height:30px;border:var(--line);border-radius:50%;display:grid;place-items:center;font-size:14px;background:var(--blue);flex:none}
+  .card.c2 .num{background:var(--pink)}
+  .card.c3 .num{background:var(--green)}
+  .card.c4 .num{background:var(--purple)}
+  .card.c5 .num{background:var(--orange)}
+  .card.c6 .num{background:var(--yellow)}
+  .hint{font-size:13px;color:var(--muted);margin:0 0 14px}
+
+  label.l{display:block;font-weight:700;font-size:13px;margin:16px 0 6px}
+  label.l small{font-weight:600;color:var(--muted)}
+  input[type=number],input[type=text],select{
+    width:100%;padding:11px 12px;border:var(--line);border-radius:12px;background:var(--paper);color:var(--ink);font:inherit;font-weight:600}
+  input:focus,select:focus{outline:3px solid var(--blue);outline-offset:1px}
+  input[type=color]{width:100%;height:42px;border:var(--line);border-radius:12px;background:var(--paper);padding:2px;cursor:pointer}
+  input[type=range]{width:100%;accent-color:var(--pink);height:26px}
+  .rv{display:flex;justify-content:space-between;font-weight:800;font-size:13px}
+
+  .file{
+    display:flex;align-items:center;gap:12px;border:3px dashed var(--ink);border-radius:14px;padding:14px;
+    background:var(--paper);cursor:pointer;transition:.15s}
+  .file:hover{background:#fff1cc}
+  .file .ic{font-size:26px}
+  .file b{display:block;font-size:14px;word-break:break-all}
+  .file small{color:var(--muted)}
+  .file input{display:none}
+
+  button{font:inherit;font-weight:800;cursor:pointer;border:var(--line);border-radius:12px;padding:10px 16px;background:var(--white);color:var(--ink);
+    box-shadow:3px 3px 0 var(--ink);transition:transform .08s, box-shadow .08s}
+  button:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--ink)}
+  button:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
+  button:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:3px 3px 0 var(--ink)}
+  .go{background:var(--yellow);font-size:17px;padding:14px 26px;width:100%}
+
+  /* ---------- characters ---------- */
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .chip{background:var(--yellow);border:var(--line);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:800}
+  .toolbar button,.toolbar select{padding:6px 12px;font-size:13px}
+  .toolbar select{width:auto;border-radius:10px;padding:6px 8px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:12px}
+  .char{border:var(--line);border-radius:14px;overflow:hidden;background:var(--paper);cursor:pointer;text-align:center;position:relative;
+    transition:transform .12s, box-shadow .12s;user-select:none}
+  .char:hover{transform:translateY(-3px) rotate(-1deg);box-shadow:4px 4px 0 var(--ink)}
+  .char img{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;background:#ddd;border-bottom:var(--line)}
+  .char span{display:block;padding:6px 4px;font-size:12.5px;font-weight:800}
+  .char.sel{background:var(--pink);box-shadow:4px 4px 0 var(--ink);transform:translateY(-3px)}
+  .char .tick{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:var(--green);border:var(--line);
+    display:none;place-items:center;font-size:14px;font-weight:900}
+  .char.sel .tick{display:grid}
+  .char .del{position:absolute;top:6px;left:6px;width:26px;height:26px;border-radius:50%;padding:0;background:var(--white);
+    border:var(--line);box-shadow:none;font-size:12px;line-height:1;display:grid;place-items:center}
+  .char .cb{position:absolute;bottom:34px;left:6px;background:var(--purple);border:2px solid var(--ink);border-radius:8px;font-size:10px;font-weight:800;padding:1px 6px}
+  .skel{aspect-ratio:9/16;background:linear-gradient(90deg,#f0e6cf,#fff8ec,#f0e6cf);background-size:200% 100%;animation:sh 1.2s infinite;border:var(--line);border-radius:14px}
+  @keyframes sh{to{background-position:-200% 0}}
+
+  /* ---------- creator ---------- */
+  details.creator{border:var(--line);border-radius:14px;background:var(--paper);margin-top:16px;padding:0}
+  details.creator summary{cursor:pointer;font-weight:800;padding:12px 14px;list-style:none}
+  details.creator summary::-webkit-details-marker{display:none}
+  details.creator[open] summary{border-bottom:var(--line)}
+  .cbody{padding:14px}
+  .colors{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:10px}
+  .colors div label{display:block;font-size:12px;font-weight:800;margin-bottom:4px}
+  .sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:6px 16px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px}
+  .checks label{border:var(--line);border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:800;background:var(--white);cursor:pointer;user-select:none}
+  .checks label.on{background:var(--green)}
+  .checks input{display:none}
+
+  /* ---------- option tiles ---------- */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+  .tiles.pvs{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}
+  .tile{border:var(--line);border-radius:12px;padding:10px;background:var(--paper);cursor:pointer;font-weight:800;font-size:14px;transition:.12s;user-select:none;position:relative}
+  .tile small{display:block;font-weight:600;color:var(--muted);font-size:12px;margin-top:2px}
+  .tile:hover{transform:translateY(-2px);box-shadow:3px 3px 0 var(--ink)}
+  .tile.sel{background:var(--blue);box-shadow:3px 3px 0 var(--ink)}
+  .tile.rnd{border-style:dashed}
+  .tiles.g .tile.sel{background:var(--green)}
+  .tiles.p .tile.sel{background:var(--pink)}
+  .tiles.y .tile.sel{background:var(--yellow)}
+  .tiles.o .tile.sel{background:var(--orange)}
+  .tile.pv{padding:0;overflow:hidden;text-align:center;font-size:12.5px}
+  .tile.pv img{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;background:#ddd;border-bottom:var(--line)}
+  .tile.pv .ph{aspect-ratio:9/16;display:grid;place-items:center;font-size:34px;border-bottom:var(--line);background:#ece0c6}
+  .tile.pv span{display:block;padding:6px 4px}
+  .tile.pv.sel::after{content:"✓";position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:var(--white);border:var(--line);display:grid;place-items:center;font-size:13px}
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .seedbox{display:flex;gap:8px}
+  .seedbox button{padding:8px 12px}
+  .sub{display:none;margin-top:12px}
+
+  /* ---------- output ---------- */
+  .bar{height:22px;border:var(--line);border-radius:999px;background:var(--paper);overflow:hidden}
+  .bar i{display:block;height:100%;width:0;border-right:var(--line);background:repeating-linear-gradient(45deg,var(--pink) 0 12px,var(--yellow) 12px 24px);transition:width .35s}
+  #msg{margin-top:10px;font-weight:700;font-size:14px;min-height:20px}
+  #err{margin-top:8px;font-weight:800;color:#c0173f}
+  #result{margin-top:14px;text-align:center}
+  #result video{width:100%;max-width:340px;border:var(--line);border-radius:16px;box-shadow:var(--shadow);background:#000;display:block;margin:0 auto 18px}
+  #result video.wide{max-width:640px}
+  #result a{text-decoration:none}
+  .meta{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.6}
+
+  footer{text-align:center;font-size:12px;color:var(--muted);margin-top:10px}
+
+  @media (max-width:520px){
+    .wrap{padding:14px 10px 50px}
+    .card{padding:13px;box-shadow:4px 4px 0 var(--ink)}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+    .tiles.pvs{grid-template-columns:repeat(auto-fill,minmax(88px,1fr))}
+    header{justify-content:center;text-align:center}
+    .logo{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="logo">
+      <div class="badge">🕺</div>
+      <div>
+        <h1>Dance <em>Shorts</em> Studio</h1>
+        <div class="tag">Song ki beat par 3D characters ka dance video</div>
+      </div>
+    </div>
+    <div class="pill wait" id="status"><span class="dot"></span><span id="statusTxt">Connect ho raha hai...</span><button id="retry" style="display:none">Retry</button></div>
+  </header>
+
+  <!-- 1 : characters -->
+  <section class="card">
+    <h2><span class="num">1</span> Character chuno</h2>
+    <p class="hint">Ek ya zyada (max 8) chun sakte ho. Kuch nahi chuna to random aayega. Apna custom character bhi bana sakte ho.</p>
+    <div class="toolbar">
+      <span class="chip" id="selCount">0 chune</span>
+      <button id="randPick">🎲 Random 3 chuno</button>
+      <button id="clearPick">Saaf karo</button>
+      <select id="newN" title="kitne naye random characters">
+        <option>1</option><option selected>3</option><option>4</option><option>6</option><option>8</option>
+      </select>
+      <button id="makeRand">✨ Naye random characters banao</button>
+    </div>
+    <div class="grid" id="chars">
+      <div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>
+    </div>
+
+    <details class="creator" id="creator">
+      <summary>🧪 Apna custom character banao</summary>
+      <div class="cbody">
+        <label class="l" style="margin-top:0">Naam</label>
+        <input type="text" id="cName" value="Mera Dancer" maxlength="24">
+
+        <label class="l">Rang</label>
+        <div class="colors">
+          <div><label>Skin</label><input type="color" id="cSkin" value="#f2c9a0"></div>
+          <div><label>Top</label><input type="color" id="cTop" value="#ff4fa0"></div>
+          <div><label>Pant</label><input type="color" id="cPant" value="#3050ff"></div>
+          <div><label>Shoes</label><input type="color" id="cShoe" value="#ffffff"></div>
+          <div><label>Accessory</label><input type="color" id="cAcc" value="#ffe14a"></div>
+        </div>
+
+        <label class="l">Body size</label>
+        <div class="sliders" id="cSliders"></div>
+
+        <label class="l">Accessories <small>(jitne chaho)</small></label>
+        <div class="checks" id="cAccs"></div>
+
+        <label class="l">Dance moves <small>(kam se kam ek, warna default chalega)</small></label>
+        <div class="checks" id="cMoves"></div>
+
+        <div style="margin-top:16px"><button id="cMake" class="go" style="background:var(--green);font-size:15px;padding:11px 20px">✅ Character save karo</button></div>
+        <div id="cMsg" class="hint" style="margin:8px 0 0"></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- 2 : dance -->
+  <section class="card c2">
+    <h2><span class="num">2</span> Dance style aur speed</h2>
+
+    <label class="l">Sab kaise nachenge?</label>
+    <div class="tiles p" id="syncTiles">
+      <div class="tile" data-v="unison">Unison<small>Sab ek jaisa</small></div>
+      <div class="tile sel" data-v="mirror">Mirror<small>Seedha-ulta jodi</small></div>
+      <div class="tile" data-v="canon">Canon<small>Ek ke baad ek</small></div>
+      <div class="tile" data-v="free">Free<small>Sabka apna</small></div>
+    </div>
+
+    <label class="l">Dance speed mode</label>
+    <div class="tiles p" id="speedTiles"></div>
+
+    <div class="row">
+      <div>
+        <label class="l">Dance speed <small>(multiplier)</small></label>
+        <input type="range" id="danceSpeed" min="0.4" max="2.5" step="0.1" value="1">
+        <div class="rv"><span>0.4x</span><b id="danceSpeedV">1.0x</b><span>2.5x</span></div>
+      </div>
+      <div>
+        <label class="l">Kitne dancers?</label>
+        <select id="count">
+          <option value="0">Auto (jitne chune)</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option>
+          <option>5</option><option>6</option><option>7</option><option>8</option>
+        </select>
+      </div>
+      <div>
+        <label class="l">Naye random characters add karo</label>
+        <select id="newRandom">
+          <option value="0">Nahi</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option>
+          <option>5</option><option>6</option><option>7</option><option>8</option>
+        </select>
+      </div>
+    </div>
+    <p class="hint" style="margin-top:8px">Total dancers 8 se zyada nahi honge.</p>
+
+    <label class="l">Kapde (cloth)</label>
+    <div class="tiles y" id="clothTiles">
+      <div class="tile sel" data-v="none">Original<small>Kapde na badlo</small></div>
+      <div class="tile" data-v="upload">Image se<small>Photo ke rang lo</small></div>
+      <div class="tile" data-v="random">Random<small>Naye rang</small></div>
+    </div>
+    <div class="sub" id="clothSub">
+      <label class="file" for="clothimg"><span class="ic">👕</span><span><b id="clothName">Kapde ki image chuno</b><small>JPG / PNG, max 15MB - uske rang kapdon par lagenge</small></span></label>
+      <input type="file" id="clothimg" accept="image/*" style="display:none">
+    </div>
+    <div class="sub" id="clothTarget">
+      <label class="l">Kis par lagana hai?</label>
+      <input type="text" id="clothTargetIn" value="all" placeholder="all  ya  1,3  ya  robot,cat">
+      <p class="hint" style="margin:6px 0 0">"all" = sab par. Ya dancer number (1,3) ya character id (robot,cat).</p>
+    </div>
+  </section>
+
+  <!-- 3 : stage + background -->
+  <section class="card c3">
+    <h2><span class="num">3</span> Background, stage aur lights</h2>
+
+    <label class="l" style="margin-top:6px">Background</label>
+    <div class="tiles pvs g" id="bgTiles"></div>
+    <div class="sub" id="bgFileWrap">
+      <label class="file" for="bgimg"><span class="ic">🖼️</span><span><b id="bgName">Apni background image chuno</b><small>JPG / PNG, max 15MB</small></span></label>
+      <input type="file" id="bgimg" accept="image/*" style="display:none">
+    </div>
+
+    <label class="l">Stage / floor</label>
+    <div class="tiles pvs" id="stageTiles"></div>
+
+    <label class="l">Lights <small>(tick / untick, ya random)</small></label>
+    <div class="tiles pvs o" id="lightTiles"></div>
+  </section>
+
+  <!-- 4 : camera + rotation -->
+  <section class="card c4">
+    <h2><span class="num">4</span> Camera aur rotation</h2>
+
+    <label class="l" style="margin-top:6px">Camera effects <small>(tick / untick, ya random)</small></label>
+    <div class="tiles" id="camTiles"></div>
+
+    <label class="l">Rotation <small>(kuch bhi na chuno to koi rotation nahi)</small></label>
+    <div class="tiles g" id="rotTiles"></div>
+
+    <div style="max-width:420px">
+      <label class="l">Rotation / camera sweep speed</label>
+      <input type="range" id="rotSpeed" min="0.2" max="4" step="0.1" value="1">
+      <div class="rv"><span>0.2x</span><b id="rotSpeedV">1.0x</b><span>4x</span></div>
+    </div>
+  </section>
+
+  <!-- 5 : audio -->
+  <section class="card c5">
+    <h2><span class="num">5</span> Audio aur settings</h2>
+    <label class="file" for="audio"><span class="ic">🎵</span><span><b id="audName">Song / funk audio chuno</b><small>mp3, wav, m4a, ogg, flac - max 40MB</small></span></label>
+    <input type="file" id="audio" accept="audio/*,.mp3,.wav,.m4a,.ogg,.flac" style="display:none">
+
+    <div class="row">
+      <div><label class="l">Start (sec)</label><input type="number" id="start" value="0" min="0"></div>
+      <div><label class="l">Duration (5-60 sec)</label><input type="number" id="duration" value="20" min="5" max="60"></div>
+      <div><label class="l">Resolution</label>
+        <select id="res">
+          <optgroup label="Vertical (Shorts / Reels)">
+            <option value="540x960">540x960 (fast)</option>
+            <option value="720x1280">720x1280</option>
+            <option value="1080x1920">1080x1920 (slow)</option>
+          </optgroup>
+          <optgroup label="Horizontal (YouTube)">
+            <option value="960x540">960x540 (fast)</option>
+            <option value="1280x720">1280x720</option>
+            <option value="1920x1080">1920x1080 (slow)</option>
+          </optgroup>
+        </select></div>
+      <div><label class="l">FPS</label>
+        <select id="fps"><option>24</option><option selected>30</option><option>48</option><option>60</option><option>90</option><option>120</option></select></div>
+      <div><label class="l">Seed (naya look)</label>
+        <div class="seedbox"><input type="number" id="seed" value="7"><button id="dice" title="random seed">🎲</button></div></div>
+    </div>
+
+    <div style="margin-top:20px"><button class="go" id="go">🚀 Video banao</button></div>
+  </section>
+
+  <!-- 6 : output -->
+  <section class="card c6" id="outPanel" style="display:none">
+    <h2><span class="num">6</span> Output</h2>
+    <div class="bar"><i id="barfill"></i></div>
+    <div id="msg"></div>
+    <div id="err"></div>
+    <div id="result"></div>
+  </section>
+
+  <footer>Tip: 1080p ya 60+ FPS me render dheere hota hai. Pehle 540x960 me test karo.</footer>
+</div>
+
+<script>
+/* ================= BACKEND URL (yahin change karna) ================= */
+const API = "https://maksudanyadav814-story-writer-ai.hf.space";
+/* ==================================================================== */
+
+const $ = id => document.getElementById(id);
+const MAX = 8;
+const BG_LABEL = {random:"Random", custom:"Meri image", city:"City", synth:"Synthwave", space:"Space", stage:"Stage",
+                  aurora:"Aurora", sunset:"Sunset", bokeh:"Bokeh", led:"LED Wall"};
+const MOVE_LABEL = ["Groove","Disco","Jump","Punch","Twist","High knees","Body wave","Running man","Spin","Bhangra"];
+const ACC_LABEL = {ears_cat:"Cat ears", ears_bunny:"Bunny ears", ears_bear:"Bear ears", horns:"Horns", antenna:"Antenna",
+                   hat_top:"Top hat", hat_cap:"Cap", crown:"Crown", halo:"Halo", glasses:"Glasses", cape:"Cape",
+                   tail:"Tail", mustache:"Mustache", wings:"Wings"};
+const ICON = {random:"🎲", custom:"🖼️"};
+
+let CHARS = [];
+let picked = [];
+const state = {sync:"mirror", bg:"random", stage:"disco", speed:"beat", cloth:"none"};
+const multi = {
+  lights:    {set:new Set(["spot","beams"]), rnd:false},
+  cam_fx:    {set:new Set(["cuts","sweep","zoom","shake"]), rnd:false},
+  rotations: {set:new Set(), rnd:false}
+};
+
+function el(tag, cls, html){ const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+/* ---------- connection ---------- */
+function setStatus(cls, txt, showRetry){
+  $("status").className = "pill " + cls;
+  $("statusTxt").textContent = txt;
+  $("retry").style.display = showRetry ? "inline-block" : "none";
+}
+async function fetchJSON(path, tries = 1){
+  let last;
+  for (let i = 0; i < tries; i++){
+    try{
+      const r = await fetch(API + path);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return await r.json();
+    }catch(e){ last = e; if (i < tries - 1) await new Promise(r => setTimeout(r, 4000)); }
+  }
+  throw last;
+}
+async function connect(){
+  setStatus("wait", "Connect ho raha hai... (Space soya ho to 30-60 sec)", false);
+  try{
+    const o = await fetchJSON("/api/options", 8);
+    buildAll(o);
+    setStatus("ok", "Connected - " + o.characters.length + " characters", false);
+  }catch(e){
+    setStatus("bad", "Connect nahi hua", true);
+  }
+}
+$("retry").onclick = connect;
+
+/* ---------- generic tile builders ---------- */
+function previewTile(it){
+  const t = el("div", "tile pv" + (it.rnd ? " rnd" : ""));
+  t.dataset.v = it.id;
+  if (it.preview){
+    const img = el("img");
+    img.loading = "lazy"; img.alt = it.name; img.src = API + it.preview;
+    img.onerror = () => { const ph = el("div", "ph", ICON[it.id] || "✨"); img.replaceWith(ph); };
+    t.appendChild(img);
+  } else {
+    t.appendChild(el("div", "ph", ICON[it.id] || "✨"));
+  }
+  t.appendChild(el("span", "", esc(it.name)));
+  return t;
+}
+function plainTile(it){
+  const t = el("div", "tile" + (it.rnd ? " rnd" : ""), esc(it.name) + (it.sub ? `<small>${esc(it.sub)}</small>` : ""));
+  t.dataset.v = it.id;
+  return t;
+}
+/* single select */
+function buildSingle(boxId, items, key, withPreview){
+  const box = $(boxId);
+  box.innerHTML = "";
+  items.forEach(it => {
+    const t = withPreview ? previewTile(it) : plainTile(it);
+    if (state[key] === it.id) t.classList.add("sel");
+    box.appendChild(t);
+  });
+  box.onclick = e => {
+    const t = e.target.closest(".tile"); if (!t) return;
+    state[key] = t.dataset.v;
+    box.querySelectorAll(".tile").forEach(x => x.classList.toggle("sel", x === t));
+    if (key === "bg") $("bgFileWrap").style.display = state.bg === "custom" ? "block" : "none";
+  };
+}
+/* multi select + random */
+function buildMulti(boxId, items, key, withPreview){
+  const box = $(boxId), m = multi[key];
+  box.innerHTML = "";
+  const all = [...items, {id:"__random", name:"Random", sub:"Apne aap chuno", rnd:true}];
+  const paint = () => box.querySelectorAll(".tile").forEach(t => {
+    t.classList.toggle("sel", t.dataset.v === "__random" ? m.rnd : (!m.rnd && m.set.has(t.dataset.v)));
+  });
+  all.forEach(it => box.appendChild(withPreview ? previewTile(it) : plainTile(it)));
+  box.onclick = e => {
+    const t = e.target.closest(".tile"); if (!t) return;
+    const v = t.dataset.v;
+    if (v === "__random"){ m.rnd = !m.rnd; if (m.rnd) m.set.clear(); }
+    else { m.rnd = false; m.set.has(v) ? m.set.delete(v) : m.set.add(v); }
+    paint();
+  };
+  paint();
+}
+function multiVal(key){
+  const m = multi[key];
+  if (m.rnd) return "random";
+  return m.set.size ? [...m.set].join(",") : "none";
+}
+
+/* ---------- build everything from /api/options ---------- */
+let OPT = null;
+function buildAll(o){
+  OPT = o;
+  buildChars(o.characters);
+  buildSingle("speedTiles",
+    [...o.speed_modes, {id:"random", name:"Random", rnd:true}], "speed", false);
+  buildSingle("bgTiles",
+    [{id:"random", name:BG_LABEL.random, rnd:true},
+     ...o.backgrounds.filter(b => b !== "random").map(b => ({id:b, name:BG_LABEL[b] || b, preview:"/api/preview/bg/" + b})),
+     {id:"custom", name:BG_LABEL.custom}], "bg", true);
+  buildSingle("stageTiles",
+    [{id:"random", name:"Random", rnd:true},
+     ...o.stages.map(s => ({id:s.id, name:s.name, preview:"/api/preview/stage/" + s.id}))], "stage", true);
+  buildMulti("lightTiles", o.lights.map(l => ({id:l.id, name:l.name, preview:"/api/preview/light/" + l.id})), "lights", true);
+  buildMulti("camTiles", o.cam_fx, "cam_fx", false);
+  buildMulti("rotTiles", o.rotations, "rotations", false);
+  buildCreator(o);
+}
+
+/* ---------- characters ---------- */
+function updateCount(){
+  $("selCount").textContent = picked.length + " chune";
+  document.querySelectorAll(".char").forEach(el => el.classList.toggle("sel", picked.includes(el.dataset.id)));
+}
+function buildChars(list){
+  CHARS = list;
+  const box = $("chars");
+  box.innerHTML = "";
+  picked = picked.filter(id => list.some(c => c.id === id));
+  list.forEach(c => {
+    const d = el("div", "char");
+    d.dataset.id = c.id;
+    d.innerHTML = `<div class="tick">✓</div>` +
+      (c.custom ? `<button class="del" title="Delete karo">✕</button><div class="cb">custom</div>` : "") +
+      `<img loading="lazy" src="${API}/api/preview/${encodeURIComponent(c.id)}" alt="${esc(c.name)}"><span>${esc(c.name)}</span>`;
+    d.onclick = () => {
+      if (picked.includes(c.id)) picked = picked.filter(x => x !== c.id);
+      else if (picked.length >= MAX) return alert("Max " + MAX + " characters hi chun sakte ho.");
+      else picked.push(c.id);
+      updateCount();
+    };
+    const del = d.querySelector(".del");
+    if (del) del.onclick = async ev => {
+      ev.stopPropagation();
+      if (!confirm(`"${c.name}" delete karna hai?`)) return;
+      try{
+        const r = await fetch(API + "/api/character/" + encodeURIComponent(c.id), {method:"DELETE"});
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        picked = picked.filter(x => x !== c.id);
+        await refreshChars();
+      }catch(e){ alert("Delete nahi hua: " + e.message); }
+    };
+    box.appendChild(d);
+  });
+  updateCount();
+}
+async function refreshChars(){
+  const list = await fetchJSON("/api/characters", 2);
+  buildChars(list);
+  setStatus("ok", "Connected - " + list.length + " characters", false);
+}
+$("randPick").onclick = () => {
+  if (!CHARS.length) return;
+  picked = CHARS.map(c => c.id).sort(() => Math.random() - .5).slice(0, 3);
+  updateCount();
+};
+$("clearPick").onclick = () => { picked = []; updateCount(); };
+
+$("makeRand").onclick = async () => {
+  const b = $("makeRand");
+  b.disabled = true; const old = b.textContent; b.textContent = "Ban rahe hain...";
+  try{
+    const fd = new FormData(); fd.append("n", $("newN").value);
+    const r = await fetch(API + "/api/character/random", {method:"POST", body:fd});
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const made = await r.json();
+    await refreshChars();
+    made.forEach(m => { if (picked.length < MAX) picked.push(m.id); });
+    updateCount();
+  }catch(e){ alert("Random character nahi bane: " + e.message); }
+  b.disabled = false; b.textContent = old;
+};
+
+/* ---------- custom character creator ---------- */
+const SLIDERS = [
+  ["head","Sir (head)",.1,.3,.01,.15], ["body","Body",.06,.22,.01,.11], ["arm","Haath",.025,.07,.005,.04],
+  ["leg","Pair",.03,.09,.005,.058], ["height","Height",.8,1.25,.01,1], ["foot","Jootay",.8,2.5,.1,1]
+];
+function buildCreator(o){
+  const sl = $("cSliders");
+  if (!sl.children.length){
+    SLIDERS.forEach(([k, name, mn, mx, st, df]) => {
+      const w = el("div", "", `<div class="rv"><span>${name}</span><b id="cv_${k}">${df}</b></div>
+        <input type="range" id="c_${k}" min="${mn}" max="${mx}" step="${st}" value="${df}">`);
+      sl.appendChild(w);
+      w.querySelector("input").oninput = e => { $("cv_" + k).textContent = e.target.value; };
+    });
+  }
+  const mk = (boxId, items, cls) => {
+    const box = $(boxId); box.innerHTML = "";
+    items.forEach(([val, label]) => {
+      const lb = el("label", "", `<input type="checkbox" value="${val}">${esc(label)}`);
+      lb.querySelector("input").onchange = e => lb.classList.toggle("on", e.target.checked);
+      box.appendChild(lb);
+    });
+  };
+  mk("cAccs", (o.accessories || []).map(a => [a, ACC_LABEL[a] || a]));
+  mk("cMoves", (o.moves || MOVE_LABEL).map((m, i) => [i, MOVE_LABEL[i] || m]));
+  // default 4 moves
+  [...$("cMoves").querySelectorAll("input")].slice(0, 4).forEach(i => { i.checked = true; i.parentElement.classList.add("on"); });
+}
+const checkedVals = id => [...$(id).querySelectorAll("input:checked")].map(i => i.value);
+$("cMake").onclick = async () => {
+  const b = $("cMake"), msg = $("cMsg");
+  b.disabled = true; msg.textContent = "Bana raha hoon...";
+  try{
+    const fd = new FormData();
+    fd.append("name", $("cName").value || "Custom");
+    fd.append("skin", $("cSkin").value); fd.append("top", $("cTop").value); fd.append("pant", $("cPant").value);
+    fd.append("shoe", $("cShoe").value); fd.append("acc", $("cAcc").value);
+    SLIDERS.forEach(([k]) => fd.append(k, $("c_" + k).value));
+    fd.append("accs", checkedVals("cAccs").join(","));
+    fd.append("moves", checkedVals("cMoves").join(",") || "0,1,2,3");
+    const r = await fetch(API + "/api/character/create", {method:"POST", body:fd});
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const c = await r.json();
+    await refreshChars();
+    if (picked.length < MAX) picked.push(c.id);
+    updateCount();
+    msg.textContent = `"${c.name}" ban gaya aur chun liya gaya!`;
+  }catch(e){ msg.textContent = "Error: " + e.message; }
+  b.disabled = false;
+};
+
+/* ---------- sync / cloth / sliders ---------- */
+$("syncTiles").onclick = e => {
+  const t = e.target.closest(".tile"); if (!t) return;
+  state.sync = t.dataset.v;
+  document.querySelectorAll("#syncTiles .tile").forEach(x => x.classList.toggle("sel", x === t));
+};
+$("clothTiles").onclick = e => {
+  const t = e.target.closest(".tile"); if (!t) return;
+  state.cloth = t.dataset.v;
+  document.querySelectorAll("#clothTiles .tile").forEach(x => x.classList.toggle("sel", x === t));
+  $("clothSub").style.display = state.cloth === "upload" ? "block" : "none";
+  $("clothTarget").style.display = state.cloth === "none" ? "none" : "block";
+};
+$("danceSpeed").oninput = e => { $("danceSpeedV").textContent = (+e.target.value).toFixed(1) + "x"; };
+$("rotSpeed").oninput = e => { $("rotSpeedV").textContent = (+e.target.value).toFixed(1) + "x"; };
+$("bgimg").onchange = () => { const f = $("bgimg").files[0]; $("bgName").textContent = f ? f.name : "Apni background image chuno"; };
+$("clothimg").onchange = () => { const f = $("clothimg").files[0]; $("clothName").textContent = f ? f.name : "Kapde ki image chuno"; };
+$("audio").onchange = () => { const f = $("audio").files[0]; $("audName").textContent = f ? f.name : "Song / funk audio chuno"; };
+$("dice").onclick = () => { $("seed").value = Math.floor(Math.random() * 1000000); };
+
+/* ---------- generate ---------- */
+$("go").onclick = async () => {
+  const f = $("audio").files[0];
+  if (!f) return alert("Pehle audio file chuno.");
+  if (state.bg === "custom" && !$("bgimg").files[0]) return alert("Custom background ke liye image chuno ya koi aur background lo.");
+  if (state.cloth === "upload" && !$("clothimg").files[0]) return alert("Kapde ki image chuno ya koi aur cloth option lo.");
+
+  $("outPanel").style.display = "block";
+  $("outPanel").scrollIntoView({behavior:"smooth", block:"start"});
+  $("err").textContent = "";
+  $("result").innerHTML = "";
+  $("barfill").style.width = "0%";
+  $("msg").textContent = "Upload ho raha hai...";
+  $("go").disabled = true;
+
+  const newRandom = parseInt($("newRandom").value) || 0;
+  const fd = new FormData();
+  fd.append("audio", f);
+  if (state.bg === "custom") fd.append("bg_image", $("bgimg").files[0]);
+  if (state.cloth === "upload") fd.append("cloth_image", $("clothimg").files[0]);
+  fd.append("characters", picked.length ? picked.join(",") : (newRandom > 0 ? "" : "random"));
+  fd.append("count", $("count").value);
+  fd.append("new_random", newRandom);
+  fd.append("bg", state.bg);
+  fd.append("stage", state.stage);
+  fd.append("lights", multiVal("lights"));
+  fd.append("cam_fx", multiVal("cam_fx"));
+  fd.append("rotations", multiVal("rotations"));
+  fd.append("rot_speed", $("rotSpeed").value);
+  fd.append("speed_mode", state.speed);
+  fd.append("dance_speed", $("danceSpeed").value);
+  fd.append("cloth_mode", state.cloth);
+  fd.append("cloth_target", ($("clothTargetIn").value || "all").trim() || "all");
+  fd.append("sync", state.sync);
+  fd.append("start", $("start").value || 0);
+  fd.append("duration", $("duration").value || 20);
+  fd.append("res", $("res").value);
+  fd.append("fps", $("fps").value);
+  fd.append("seed", $("seed").value === "" ? -1 : $("seed").value);
+
+  try{
+    const r = await fetch(API + "/api/generate", {method:"POST", body:fd});
+    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || ("HTTP " + r.status));
+    const j = await r.json();
+    window.__meta = j;
+    poll(j.job_id);
+    if (newRandom > 0) refreshChars().catch(() => {});   // naye random characters list me dikhein
+  }catch(e){
+    $("err").textContent = "Error: " + e.message;
+    $("go").disabled = false;
+  }
+};
+
+function nameOf(id){ const c = CHARS.find(x => x.id === id); return c ? c.name : id; }
+function listOf(a){ return (a && a.length) ? a.join(", ") : "none"; }
+
+async function poll(id){
+  try{
+    const r = await fetch(API + "/api/status/" + id);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json();
+    $("barfill").style.width = Math.round((j.progress || 0) * 100) + "%";
+    $("msg").textContent = j.message || "";
+    if (j.status === "done"){
+      const url = API + "/api/video/" + id;
+      const wide = (() => { const [w, h] = $("res").value.split("x").map(Number); return w > h; })();
+      const m = window.__meta || {};
+      $("result").innerHTML =
+        `<video controls playsinline class="${wide ? "wide" : ""}" src="${url}"></video>
+         <a href="${url}" download="dance_short.mp4"><button class="go" style="width:auto">⬇ MP4 download karo</button></a>
+         <div class="meta">
+           Seed: ${esc(m.seed ?? "")} &nbsp;|&nbsp; Dancers: ${esc((m.characters || []).map(nameOf).join(", "))}<br>
+           Stage: ${esc(m.stage ?? "")} &nbsp;|&nbsp; Lights: ${esc(listOf(m.lights))} &nbsp;|&nbsp; Camera: ${esc(listOf(m.cam_fx))}<br>
+           Rotation: ${esc(listOf(m.rotations))} &nbsp;|&nbsp; Speed: ${esc(m.speed_mode ?? "")} &nbsp;|&nbsp; Cloth: ${esc(m.cloth_mode ?? "")}
+         </div>`;
+      $("go").disabled = false;
+      return;
+    }
+    if (j.status === "error"){
+      $("err").textContent = "Error: " + j.error;
+      $("go").disabled = false;
+      return;
+    }
+    setTimeout(() => poll(id), 900);
+  }catch(e){
+    $("err").textContent = "Connection issue: " + e.message;
+    $("go").disabled = false;
+  }
+}
+
+connect();
+</script>
+</body>
+</html>
