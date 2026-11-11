@@ -1,47 +1,84 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="hi-Latn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff8ec">
 <title>Dance Shorts Studio</title>
 <style>
   :root {
     --paper:#fff8ec; --ink:#1d1b26; --white:#ffffff;
-    --yellow:#ffd23f; --pink:#ff6b9d; --blue:#4cc9f0; --green:#7bd88f; --purple:#b69cff; --orange:#ff9f5a;
+    --yellow:#ffd23f; --pink:#ff6b9d; --blue:#4cc9f0; --green:#7bd88f; --purple:#b69cff; --orange:#ff9f5a; --red:#ff5a5f;
     --muted:#6b6678; --line:3px solid var(--ink);
     --shadow:5px 5px 0 var(--ink);
     --r:16px;
+    --nav-h:64px;
+    --safe-b:env(safe-area-inset-bottom,0px);
+    --safe-t:env(safe-area-inset-top,0px);
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
   body{
     margin:0;color:var(--ink);
     font-family:"Trebuchet MS","Segoe UI",system-ui,Roboto,sans-serif;
     background-color:var(--paper);
     background-image:radial-gradient(#e9d9b8 1.5px, transparent 1.5px);
     background-size:22px 22px;
+    overflow-x:hidden;
   }
-  .wrap{max-width:1040px;margin:0 auto;padding:18px 14px 60px}
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+  /* ---------- layout ---------- */
+  .app{max-width:1180px;margin:0 auto;padding:0 12px calc(var(--nav-h) + var(--safe-b) + 90px)}
+  .side{display:contents}
+  main{min-width:0}
+  section.card{scroll-margin-top:84px}
 
   /* ---------- header ---------- */
-  header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px}
-  .logo{display:flex;align-items:center;gap:12px}
+  .top{
+    position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:calc(8px + var(--safe-t)) 12px 8px;margin:0 -12px 14px;
+    background:var(--paper);border-bottom:var(--line)}
+  .logo{display:flex;align-items:center;gap:10px;min-width:0}
   .logo .badge{
-    width:54px;height:54px;border:var(--line);border-radius:14px;background:var(--yellow);
-    box-shadow:var(--shadow);display:grid;place-items:center;font-size:28px;transform:rotate(-6deg);flex:none}
-  h1{margin:0;font-size:clamp(22px,5vw,32px);line-height:1;letter-spacing:-.5px}
-  h1 em{font-style:normal;background:var(--pink);padding:0 8px;border:var(--line);border-radius:10px;display:inline-block;transform:rotate(2deg);margin-left:2px}
-  .tag{font-size:13px;color:var(--muted);margin-top:6px}
+    width:40px;height:40px;border:var(--line);border-radius:12px;background:var(--yellow);
+    box-shadow:3px 3px 0 var(--ink);display:grid;place-items:center;font-size:22px;transform:rotate(-6deg);flex:none}
+  h1{margin:0;font-size:clamp(17px,5vw,28px);line-height:1.05;letter-spacing:-.5px}
+  h1 em{font-style:normal;background:var(--pink);padding:0 6px;border:var(--line);border-radius:9px;display:inline-block;transform:rotate(2deg);margin-left:2px}
+  .tag{display:none;font-size:13px;color:var(--muted);margin-top:6px}
   .pill{
     display:inline-flex;align-items:center;gap:8px;border:var(--line);border-radius:999px;background:var(--white);
-    padding:7px 14px;font-weight:700;font-size:13px;box-shadow:3px 3px 0 var(--ink)}
-  .dot{width:11px;height:11px;border-radius:50%;background:#bbb;border:2px solid var(--ink)}
+    padding:6px 12px;font-weight:700;font-size:12px;box-shadow:3px 3px 0 var(--ink);min-width:0;flex:0 1 auto}
+  .pill #statusTxt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34vw}
+  .dot{width:11px;height:11px;border-radius:50%;background:#bbb;border:2px solid var(--ink);flex:none}
   .pill.ok .dot{background:var(--green)} .pill.wait .dot{background:var(--yellow);animation:blink 1s infinite} .pill.bad .dot{background:var(--pink)}
   @keyframes blink{50%{opacity:.25}}
-  .pill button{padding:3px 10px;font-size:12px;box-shadow:none;border-width:2px}
+  .pill button{padding:3px 10px;font-size:12px;box-shadow:none;border-width:2px;min-height:0}
+
+  /* ---------- navigation ---------- */
+  .nav{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;
+    background:var(--white);border-top:var(--line);padding-bottom:var(--safe-b)}
+  .nav a{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:var(--nav-h);
+    padding:6px 2px;text-decoration:none;color:var(--ink);font-size:11px;font-weight:800;border-right:2px solid var(--ink);
+    position:relative;-webkit-user-select:none;user-select:none}
+  .nav a:last-child{border-right:0}
+  .nav a .ic{font-size:20px;line-height:1}
+  .nav a.on{background:var(--yellow)}
+  .nav a.on::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--ink)}
+  .nav a[hidden]{display:none}
+  .sidego{display:none}
+  .fab{
+    position:fixed;right:12px;bottom:calc(var(--nav-h) + var(--safe-b) + 12px);z-index:45;
+    background:var(--yellow);font-size:15px;padding:12px 18px;border-radius:999px;box-shadow:4px 4px 0 var(--ink)}
+  .fab.hide{display:none}
+  .stepnav{display:flex;justify-content:space-between;gap:10px;margin-top:20px;padding-top:14px;border-top:3px dashed var(--ink)}
+  .stepnav button{flex:1;background:var(--paper)}
+  .stepnav button.nx{background:var(--blue)}
 
   /* ---------- cards ---------- */
-  .card{background:var(--white);border:var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:22px;position:relative}
+  .card{background:var(--white);border:var(--line);border-radius:var(--r);box-shadow:4px 4px 0 var(--ink);padding:14px;margin-bottom:20px;position:relative}
   .card h2{margin:0 0 4px;font-size:18px;display:flex;align-items:center;gap:10px}
   .num{width:30px;height:30px;border:var(--line);border-radius:50%;display:grid;place-items:center;font-size:14px;background:var(--blue);flex:none}
   .card.c2 .num{background:var(--pink)}
@@ -49,49 +86,52 @@
   .card.c4 .num{background:var(--purple)}
   .card.c5 .num{background:var(--orange)}
   .card.c6 .num{background:var(--yellow)}
-  .hint{font-size:13px;color:var(--muted);margin:0 0 14px}
+  .hint{font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.45}
 
-  label.l{display:block;font-weight:700;font-size:13px;margin:16px 0 6px}
+  label.l{display:block;font-weight:700;font-size:13px;margin:18px 0 8px}
   label.l small{font-weight:600;color:var(--muted)}
   input[type=number],input[type=text],select{
-    width:100%;padding:11px 12px;border:var(--line);border-radius:12px;background:var(--paper);color:var(--ink);font:inherit;font-weight:600}
-  input:focus,select:focus{outline:3px solid var(--blue);outline-offset:1px}
-  input[type=color]{width:100%;height:42px;border:var(--line);border-radius:12px;background:var(--paper);padding:2px;cursor:pointer}
-  input[type=range]{width:100%;accent-color:var(--pink);height:26px}
+    width:100%;min-height:46px;padding:10px 12px;border:var(--line);border-radius:12px;background:var(--paper);color:var(--ink);font:inherit;font-size:16px;font-weight:600}
+  input[type=color]{width:100%;height:46px;border:var(--line);border-radius:12px;background:var(--paper);padding:2px;cursor:pointer}
+  input[type=range]{width:100%;accent-color:var(--pink);height:34px;margin:0}
   .rv{display:flex;justify-content:space-between;font-weight:800;font-size:13px}
 
   .file{
     display:flex;align-items:center;gap:12px;border:3px dashed var(--ink);border-radius:14px;padding:14px;
-    background:var(--paper);cursor:pointer;transition:.15s}
+    background:var(--paper);cursor:pointer;transition:.15s;min-height:64px}
   .file:hover{background:#fff1cc}
   .file .ic{font-size:26px}
   .file b{display:block;font-size:14px;word-break:break-all}
   .file small{color:var(--muted)}
-  .file input{display:none}
+  .file.has{border-style:solid;background:#e9fbe9}
 
-  button{font:inherit;font-weight:800;cursor:pointer;border:var(--line);border-radius:12px;padding:10px 16px;background:var(--white);color:var(--ink);
-    box-shadow:3px 3px 0 var(--ink);transition:transform .08s, box-shadow .08s}
-  button:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--ink)}
+  button{font:inherit;font-weight:800;cursor:pointer;border:var(--line);border-radius:12px;padding:10px 16px;min-height:44px;background:var(--white);color:var(--ink);
+    box-shadow:3px 3px 0 var(--ink);transition:transform .08s, box-shadow .08s;touch-action:manipulation}
   button:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
   button:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:3px 3px 0 var(--ink)}
   .go{background:var(--yellow);font-size:17px;padding:14px 26px;width:100%}
+  @media (hover:hover){
+    button:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--ink)}
+    button:disabled:hover{transform:none;box-shadow:3px 3px 0 var(--ink)}
+    .char:hover{transform:translateY(-3px) rotate(-1deg);box-shadow:4px 4px 0 var(--ink)}
+    .tile:hover{transform:translateY(-2px);box-shadow:3px 3px 0 var(--ink)}
+  }
 
   /* ---------- characters ---------- */
   .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
-  .chip{background:var(--yellow);border:var(--line);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:800}
-  .toolbar button,.toolbar select{padding:6px 12px;font-size:13px}
-  .toolbar select{width:auto;border-radius:10px;padding:6px 8px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:12px}
+  .chip{background:var(--yellow);border:var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:800}
+  .toolbar button{padding:8px 12px;font-size:13px;flex:1 1 auto}
+  .toolbar select{width:auto;border-radius:10px;padding:6px 8px;min-height:44px;flex:0 0 auto}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
   .char{border:var(--line);border-radius:14px;overflow:hidden;background:var(--paper);cursor:pointer;text-align:center;position:relative;
     transition:transform .12s, box-shadow .12s;user-select:none}
-  .char:hover{transform:translateY(-3px) rotate(-1deg);box-shadow:4px 4px 0 var(--ink)}
   .char img{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;background:#ddd;border-bottom:var(--line)}
   .char span{display:block;padding:6px 4px;font-size:12.5px;font-weight:800}
   .char.sel{background:var(--pink);box-shadow:4px 4px 0 var(--ink);transform:translateY(-3px)}
   .char .tick{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:var(--green);border:var(--line);
     display:none;place-items:center;font-size:14px;font-weight:900}
   .char.sel .tick{display:grid}
-  .char .del{position:absolute;top:6px;left:6px;width:26px;height:26px;border-radius:50%;padding:0;background:var(--white);
+  .char .del{position:absolute;top:4px;left:4px;width:32px;height:32px;min-height:0;border-radius:50%;padding:0;background:var(--white);
     border:var(--line);box-shadow:none;font-size:12px;line-height:1;display:grid;place-items:center}
   .char .cb{position:absolute;bottom:34px;left:6px;background:var(--purple);border:2px solid var(--ink);border-radius:8px;font-size:10px;font-weight:800;padding:1px 6px}
   .skel{aspect-ratio:9/16;background:linear-gradient(90deg,#f0e6cf,#fff8ec,#f0e6cf);background-size:200% 100%;animation:sh 1.2s infinite;border:var(--line);border-radius:14px}
@@ -99,86 +139,155 @@
 
   /* ---------- creator ---------- */
   details.creator{border:var(--line);border-radius:14px;background:var(--paper);margin-top:16px;padding:0}
-  details.creator summary{cursor:pointer;font-weight:800;padding:12px 14px;list-style:none}
+  details.creator summary{cursor:pointer;font-weight:800;padding:14px;list-style:none;min-height:48px}
   details.creator summary::-webkit-details-marker{display:none}
   details.creator[open] summary{border-bottom:var(--line)}
   .cbody{padding:14px}
-  .colors{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:10px}
+  .colors{display:grid;grid-template-columns:repeat(auto-fit,minmax(86px,1fr));gap:10px}
   .colors div label{display:block;font-size:12px;font-weight:800;margin-bottom:4px}
   .sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:6px 16px}
   .checks{display:flex;flex-wrap:wrap;gap:8px}
-  .checks label{border:var(--line);border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:800;background:var(--white);cursor:pointer;user-select:none}
+  .checks label{border:var(--line);border-radius:999px;padding:9px 14px;font-size:13px;font-weight:800;background:var(--white);cursor:pointer;user-select:none}
   .checks label.on{background:var(--green)}
-  .checks input{display:none}
+  .checks input{position:absolute;opacity:0;pointer-events:none}
+  .checks label:focus-within{outline:3px solid var(--blue);outline-offset:2px}
 
   /* ---------- option tiles ---------- */
   .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
-  .tiles.pvs{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}
-  .tile{border:var(--line);border-radius:12px;padding:10px;background:var(--paper);cursor:pointer;font-weight:800;font-size:14px;transition:.12s;user-select:none;position:relative}
+  .tiles.pvs{grid-template-columns:repeat(auto-fill,minmax(88px,1fr))}
+  .tile{border:var(--line);border-radius:12px;padding:11px;background:var(--paper);cursor:pointer;font-weight:800;font-size:14px;transition:.12s;user-select:none;position:relative;min-height:48px}
   .tile small{display:block;font-weight:600;color:var(--muted);font-size:12px;margin-top:2px}
-  .tile:hover{transform:translateY(-2px);box-shadow:3px 3px 0 var(--ink)}
   .tile.sel{background:var(--blue);box-shadow:3px 3px 0 var(--ink)}
   .tile.rnd{border-style:dashed}
   .tiles.g .tile.sel{background:var(--green)}
   .tiles.p .tile.sel{background:var(--pink)}
   .tiles.y .tile.sel{background:var(--yellow)}
   .tiles.o .tile.sel{background:var(--orange)}
+  .tiles.r .tile.sel{background:var(--red);color:#fff}
+  .tiles.r .tile.sel small{color:#ffe9e9}
   .tile.pv{padding:0;overflow:hidden;text-align:center;font-size:12.5px}
   .tile.pv img{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;background:#ddd;border-bottom:var(--line)}
   .tile.pv .ph{aspect-ratio:9/16;display:grid;place-items:center;font-size:34px;border-bottom:var(--line);background:#ece0c6}
   .tile.pv span{display:block;padding:6px 4px}
-  .tile.pv.sel::after{content:"✓";position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:var(--white);border:var(--line);display:grid;place-items:center;font-size:13px}
+  .tile.pv.sel::after{content:"✓";position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:var(--white);border:var(--line);display:grid;place-items:center;font-size:13px;color:var(--ink)}
   .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
   .seedbox{display:flex;gap:8px}
-  .seedbox button{padding:8px 12px}
+  .seedbox button{padding:8px 14px}
   .sub{display:none;margin-top:12px}
+  .dim{opacity:.45;pointer-events:none;filter:grayscale(.6)}
+
+  /* ---------- battle ---------- */
+  .battle{border:var(--line);border-radius:14px;background:#fff0f0;padding:14px;margin-top:14px}
+  .battle h3{margin:0 0 4px;font-size:16px}
+  .names{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .names .a input{border-color:var(--red)} .names .b input{border-color:#1b8fd1}
+  .trow{display:flex;align-items:center;justify-content:space-between;gap:10px;border:var(--line);border-radius:12px;background:var(--white);padding:6px 6px 6px 12px;margin-bottom:8px}
+  .trow b{font-size:13.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .seg{display:flex;flex:none;gap:6px}
+  .seg button{min-height:40px;padding:6px 14px;box-shadow:none;border-radius:10px;font-size:13px}
+  .seg button.on.a{background:var(--red);color:#fff}
+  .seg button.on.b{background:var(--blue)}
 
   /* ---------- output ---------- */
-  .bar{height:22px;border:var(--line);border-radius:999px;background:var(--paper);overflow:hidden}
+  .bar{height:24px;border:var(--line);border-radius:999px;background:var(--paper);overflow:hidden}
   .bar i{display:block;height:100%;width:0;border-right:var(--line);background:repeating-linear-gradient(45deg,var(--pink) 0 12px,var(--yellow) 12px 24px);transition:width .35s}
   #msg{margin-top:10px;font-weight:700;font-size:14px;min-height:20px}
   #err{margin-top:8px;font-weight:800;color:#c0173f}
   #result{margin-top:14px;text-align:center}
-  #result video{width:100%;max-width:340px;border:var(--line);border-radius:16px;box-shadow:var(--shadow);background:#000;display:block;margin:0 auto 18px}
+  #result video{width:100%;max-width:340px;max-height:72vh;max-height:72dvh;border:var(--line);border-radius:16px;box-shadow:var(--shadow);background:#000;display:block;margin:0 auto 18px}
   #result video.wide{max-width:640px}
-  #result a{text-decoration:none}
-  .meta{font-size:12.5px;color:var(--muted);margin-top:10px;line-height:1.6}
+  .resbtns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .resbtns .go{width:auto;flex:1 1 220px}
+  .resbtns .alt{background:var(--white);font-size:15px;padding:12px 18px;flex:0 1 auto}
+  .meta{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.7;text-align:left;word-break:break-word}
 
   footer{text-align:center;font-size:12px;color:var(--muted);margin-top:10px}
 
-  @media (max-width:520px){
-    .wrap{padding:14px 10px 50px}
-    .card{padding:13px;box-shadow:4px 4px 0 var(--ink)}
-    .grid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
-    .tiles.pvs{grid-template-columns:repeat(auto-fill,minmax(88px,1fr))}
-    header{justify-content:center;text-align:center}
-    .logo{flex-direction:column}
+  /* ---------- small phones ---------- */
+  @media (max-width:380px){
+    .names{grid-template-columns:1fr}
+    .tiles{grid-template-columns:repeat(2,1fr)}
+    .pill #statusTxt{max-width:26vw}
+    .nav a{font-size:10px}
+  }
+
+  /* ---------- tablet ---------- */
+  @media (min-width:600px){
+    .app{padding-left:18px;padding-right:18px}
+    .top{margin:0 -18px 16px;padding-left:18px;padding-right:18px}
+    .card{padding:18px}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:12px}
+    .tiles.pvs{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}
+    .pill #statusTxt{max-width:none}
+    .tag{display:block}
+  }
+
+  /* ---------- desktop: sidebar navigation ---------- */
+  @media (min-width:960px){
+    .app{display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px;padding-bottom:60px;align-items:start}
+    .side{display:flex;flex-direction:column;gap:14px;position:sticky;top:16px;padding-top:16px}
+    .top{position:static;flex-direction:column;align-items:flex-start;border:0;margin:0;padding:0;background:none}
+    .top .logo{align-items:flex-start}
+    .top .logo .badge{width:54px;height:54px;font-size:28px}
+    h1{font-size:26px}
+    .pill{box-shadow:3px 3px 0 var(--ink)}
+    .nav{position:static;display:flex;flex-direction:column;gap:8px;background:none;border:0;padding:0}
+    .nav a{
+      flex-direction:row;justify-content:flex-start;gap:10px;min-height:48px;padding:8px 12px;font-size:14px;
+      border:var(--line);border-radius:12px;background:var(--white);box-shadow:3px 3px 0 var(--ink)}
+    .nav a:last-child{border-right:var(--line)}
+    .nav a.on{background:var(--yellow)}
+    .nav a.on::before{display:none}
+    .fab{display:none}
+    .sidego{display:block;font-size:16px;padding:14px}
+    main{padding-top:16px}
+    section.card{scroll-margin-top:18px}
+    .stepnav{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    html{scroll-behavior:auto}
   }
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="app">
 
-  <header>
-    <div class="logo">
-      <div class="badge">🕺</div>
-      <div>
-        <h1>Dance <em>Shorts</em> Studio</h1>
-        <div class="tag">Song ki beat par 3D characters ka dance video</div>
+  <div class="side">
+    <header class="top">
+      <div class="logo">
+        <div class="badge">🕺</div>
+        <div>
+          <h1>Dance <em>Shorts</em> Studio</h1>
+          <div class="tag">Song ki beat par 3D characters ka dance / fight video</div>
+        </div>
       </div>
-    </div>
-    <div class="pill wait" id="status"><span class="dot"></span><span id="statusTxt">Connect ho raha hai...</span><button id="retry" style="display:none">Retry</button></div>
-  </header>
+      <div class="pill wait" id="status" role="status" aria-live="polite"><span class="dot"></span><span id="statusTxt">Connect ho raha hai...</span><button id="retry" style="display:none">Retry</button></div>
+    </header>
 
+    <nav class="nav" id="nav" aria-label="Sections">
+      <a href="#sec-chars" data-t="sec-chars"><span class="ic">🧍</span><span>Character</span></a>
+      <a href="#sec-mode" data-t="sec-mode"><span class="ic">💃</span><span>Mode</span></a>
+      <a href="#sec-stage" data-t="sec-stage"><span class="ic">🎪</span><span>Stage</span></a>
+      <a href="#sec-cam" data-t="sec-cam"><span class="ic">🎥</span><span>Camera</span></a>
+      <a href="#sec-audio" data-t="sec-audio"><span class="ic">🎵</span><span>Audio</span></a>
+      <a href="#outPanel" data-t="outPanel" id="navOut" hidden><span class="ic">🎬</span><span>Output</span></a>
+    </nav>
+    <button class="go sidego" id="goSide">🚀 Video banao</button>
+  </div>
+
+  <main>
   <!-- 1 : characters -->
-  <section class="card">
+  <section class="card" id="sec-chars">
     <h2><span class="num">1</span> Character chuno</h2>
     <p class="hint">Ek ya zyada (max 8) chun sakte ho. Kuch nahi chuna to random aayega. Apna custom character bhi bana sakte ho.</p>
     <div class="toolbar">
       <span class="chip" id="selCount">0 chune</span>
       <button id="randPick">🎲 Random 3 chuno</button>
       <button id="clearPick">Saaf karo</button>
-      <select id="newN" title="kitne naye random characters">
+    </div>
+    <div class="toolbar">
+      <select id="newN" title="kitne naye random characters" aria-label="Kitne naye random characters">
         <option>1</option><option selected>3</option><option>4</option><option>6</option><option>8</option>
       </select>
       <button id="makeRand">✨ Naye random characters banao</button>
@@ -190,16 +299,16 @@
     <details class="creator" id="creator">
       <summary>🧪 Apna custom character banao</summary>
       <div class="cbody">
-        <label class="l" style="margin-top:0">Naam</label>
+        <label class="l" style="margin-top:0" for="cName">Naam</label>
         <input type="text" id="cName" value="Mera Dancer" maxlength="24">
 
         <label class="l">Rang</label>
         <div class="colors">
-          <div><label>Skin</label><input type="color" id="cSkin" value="#f2c9a0"></div>
-          <div><label>Top</label><input type="color" id="cTop" value="#ff4fa0"></div>
-          <div><label>Pant</label><input type="color" id="cPant" value="#3050ff"></div>
-          <div><label>Shoes</label><input type="color" id="cShoe" value="#ffffff"></div>
-          <div><label>Accessory</label><input type="color" id="cAcc" value="#ffe14a"></div>
+          <div><label for="cSkin">Skin</label><input type="color" id="cSkin" value="#f2c9a0"></div>
+          <div><label for="cTop">Top</label><input type="color" id="cTop" value="#ff4fa0"></div>
+          <div><label for="cPant">Pant</label><input type="color" id="cPant" value="#3050ff"></div>
+          <div><label for="cShoe">Shoes</label><input type="color" id="cShoe" value="#ffffff"></div>
+          <div><label for="cAcc">Accessory</label><input type="color" id="cAcc" value="#ffe14a"></div>
         </div>
 
         <label class="l">Body size</label>
@@ -212,21 +321,44 @@
         <div class="checks" id="cMoves"></div>
 
         <div style="margin-top:16px"><button id="cMake" class="go" style="background:var(--green);font-size:15px;padding:11px 20px">✅ Character save karo</button></div>
-        <div id="cMsg" class="hint" style="margin:8px 0 0"></div>
+        <div id="cMsg" class="hint" style="margin:8px 0 0" role="status"></div>
       </div>
     </details>
   </section>
 
-  <!-- 2 : dance -->
-  <section class="card c2">
-    <h2><span class="num">2</span> Dance style aur speed</h2>
+  <!-- 2 : mode + dance -->
+  <section class="card c2" id="sec-mode">
+    <h2><span class="num">2</span> Mode, dance aur speed</h2>
 
-    <label class="l">Sab kaise nachenge?</label>
-    <div class="tiles p" id="syncTiles">
-      <div class="tile" data-v="unison">Unison<small>Sab ek jaisa</small></div>
-      <div class="tile sel" data-v="mirror">Mirror<small>Seedha-ulta jodi</small></div>
-      <div class="tile" data-v="canon">Canon<small>Ek ke baad ek</small></div>
-      <div class="tile" data-v="free">Free<small>Sabka apna</small></div>
+    <label class="l" style="margin-top:10px">Video ka mode</label>
+    <div class="tiles r" id="modeTiles"></div>
+
+    <div class="battle" id="battleSub" style="display:none">
+      <h3>⚔️ VS Fight settings</h3>
+      <p class="hint" style="margin-bottom:10px">Kam se kam 2 dancers chahiye (kam hue to apne aap add honge). Video ke end me KO hota hai.</p>
+
+      <label class="l" style="margin-top:6px">Hathiyaar (weapon)</label>
+      <div class="tiles o" id="weaponTiles"></div>
+
+      <label class="l">Team ke naam</label>
+      <div class="names">
+        <div class="a"><input type="text" id="teamA" value="TEAM RED" maxlength="14" aria-label="Team A naam"></div>
+        <div class="b"><input type="text" id="teamB" value="TEAM BLUE" maxlength="14" aria-label="Team B naam"></div>
+      </div>
+
+      <label class="l">Teams kaise banein?</label>
+      <div class="tiles" id="teamModeTiles"></div>
+      <div id="teamBox" style="margin-top:12px;display:none"></div>
+    </div>
+
+    <div id="danceOnly">
+      <label class="l">Sab kaise nachenge?</label>
+      <div class="tiles p" id="syncTiles">
+        <div class="tile sel" data-v="mirror">Mirror<small>Seedha-ulta jodi</small></div>
+        <div class="tile" data-v="unison">Unison<small>Sab ek jaisa</small></div>
+        <div class="tile" data-v="canon">Canon<small>Ek ke baad ek</small></div>
+        <div class="tile" data-v="free">Free<small>Sabka apna</small></div>
+      </div>
     </div>
 
     <label class="l">Dance speed mode</label>
@@ -239,7 +371,7 @@
         <div class="rv"><span>0.4x</span><b id="danceSpeedV">1.0x</b><span>2.5x</span></div>
       </div>
       <div>
-        <label class="l">Kitne dancers?</label>
+        <label class="l" for="count">Kitne dancers?</label>
         <select id="count">
           <option value="0">Auto (jitne chune)</option>
           <option>1</option><option>2</option><option>3</option><option>4</option>
@@ -247,7 +379,7 @@
         </select>
       </div>
       <div>
-        <label class="l">Naye random characters add karo</label>
+        <label class="l" for="newRandom">Naye random characters add karo</label>
         <select id="newRandom">
           <option value="0">Nahi</option>
           <option>1</option><option>2</option><option>3</option><option>4</option>
@@ -268,14 +400,14 @@
       <input type="file" id="clothimg" accept="image/*" style="display:none">
     </div>
     <div class="sub" id="clothTarget">
-      <label class="l">Kis par lagana hai?</label>
-      <input type="text" id="clothTargetIn" value="all" placeholder="all  ya  1,3  ya  robot,cat">
+      <label class="l" for="clothTargetIn">Kis par lagana hai?</label>
+      <input type="text" id="clothTargetIn" value="all" placeholder="all  ya  1,3  ya  robot,cat" autocapitalize="off" autocorrect="off">
       <p class="hint" style="margin:6px 0 0">"all" = sab par. Ya dancer number (1,3) ya character id (robot,cat).</p>
     </div>
   </section>
 
   <!-- 3 : stage + background -->
-  <section class="card c3">
+  <section class="card c3" id="sec-stage">
     <h2><span class="num">3</span> Background, stage aur lights</h2>
 
     <label class="l" style="margin-top:6px">Background</label>
@@ -293,7 +425,7 @@
   </section>
 
   <!-- 4 : camera + rotation -->
-  <section class="card c4">
+  <section class="card c4" id="sec-cam">
     <h2><span class="num">4</span> Camera aur rotation</h2>
 
     <label class="l" style="margin-top:6px">Camera effects <small>(tick / untick, ya random)</small></label>
@@ -310,15 +442,15 @@
   </section>
 
   <!-- 5 : audio -->
-  <section class="card c5">
+  <section class="card c5" id="sec-audio">
     <h2><span class="num">5</span> Audio aur settings</h2>
-    <label class="file" for="audio"><span class="ic">🎵</span><span><b id="audName">Song / funk audio chuno</b><small>mp3, wav, m4a, ogg, flac - max 40MB</small></span></label>
+    <label class="file" for="audio" id="audBox"><span class="ic">🎵</span><span><b id="audName">Song / funk audio chuno</b><small>mp3, wav, m4a, ogg, flac - max 40MB</small></span></label>
     <input type="file" id="audio" accept="audio/*,.mp3,.wav,.m4a,.ogg,.flac" style="display:none">
 
     <div class="row">
-      <div><label class="l">Start (sec)</label><input type="number" id="start" value="0" min="0"></div>
-      <div><label class="l">Duration (5-60 sec)</label><input type="number" id="duration" value="20" min="5" max="60"></div>
-      <div><label class="l">Resolution</label>
+      <div><label class="l" for="start">Start (sec)</label><input type="number" id="start" value="0" min="0" inputmode="decimal"></div>
+      <div><label class="l" for="duration">Duration (5-60 sec)</label><input type="number" id="duration" value="20" min="5" max="60" inputmode="decimal"></div>
+      <div><label class="l" for="res">Resolution</label>
         <select id="res">
           <optgroup label="Vertical (Shorts / Reels)">
             <option value="540x960">540x960 (fast)</option>
@@ -331,10 +463,10 @@
             <option value="1920x1080">1920x1080 (slow)</option>
           </optgroup>
         </select></div>
-      <div><label class="l">FPS</label>
+      <div><label class="l" for="fps">FPS</label>
         <select id="fps"><option>24</option><option selected>30</option><option>48</option><option>60</option><option>90</option><option>120</option></select></div>
-      <div><label class="l">Seed (naya look)</label>
-        <div class="seedbox"><input type="number" id="seed" value="7"><button id="dice" title="random seed">🎲</button></div></div>
+      <div><label class="l" for="seed">Seed (naya look)</label>
+        <div class="seedbox"><input type="number" id="seed" value="7" inputmode="numeric"><button id="dice" title="random seed" aria-label="Random seed">🎲</button></div></div>
     </div>
 
     <div style="margin-top:20px"><button class="go" id="go">🚀 Video banao</button></div>
@@ -344,13 +476,16 @@
   <section class="card c6" id="outPanel" style="display:none">
     <h2><span class="num">6</span> Output</h2>
     <div class="bar"><i id="barfill"></i></div>
-    <div id="msg"></div>
-    <div id="err"></div>
+    <div id="msg" role="status" aria-live="polite"></div>
+    <div id="err" role="alert"></div>
     <div id="result"></div>
   </section>
 
   <footer>Tip: 1080p ya 60+ FPS me render dheere hota hai. Pehle 540x960 me test karo.</footer>
+  </main>
 </div>
+
+<button class="fab" id="fab">🚀 Video banao</button>
 
 <script>
 /* ================= BACKEND URL (yahin change karna) ================= */
@@ -365,16 +500,19 @@ const MOVE_LABEL = ["Groove","Disco","Jump","Punch","Twist","High knees","Body w
 const ACC_LABEL = {ears_cat:"Cat ears", ears_bunny:"Bunny ears", ears_bear:"Bear ears", horns:"Horns", antenna:"Antenna",
                    hat_top:"Top hat", hat_cap:"Cap", crown:"Crown", halo:"Halo", glasses:"Glasses", cape:"Cape",
                    tail:"Tail", mustache:"Mustache", wings:"Wings"};
+const WEAPON_LABEL = {talwar:"Talwar", sword:"Sword", axe:"Axe", staff:"Staff", hammer:"Hammer", fists:"Fists", mixed:"Mixed", random:"Random"};
 const ICON = {random:"🎲", custom:"🖼️"};
 
 let CHARS = [];
 let picked = [];
-const state = {sync:"mirror", bg:"random", stage:"disco", speed:"beat", cloth:"none"};
+const teamOf = {};                    // char id -> 0 (A) / 1 (B)
+const state = {sync:"mirror", bg:"random", stage:"disco", speed:"beat", cloth:"none", battle:"off", weapon:"talwar", teamMode:"auto"};
 const multi = {
   lights:    {set:new Set(["spot","beams"]), rnd:false},
   cam_fx:    {set:new Set(["cuts","sweep","zoom","shake"]), rnd:false},
   rotations: {set:new Set(), rnd:false}
 };
+const hooks = {};
 
 function el(tag, cls, html){ const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
@@ -409,9 +547,10 @@ async function connect(){
 $("retry").onclick = connect;
 
 /* ---------- generic tile builders ---------- */
+function setA11y(t, role){ t.tabIndex = 0; t.setAttribute("role", role || "button"); }
 function previewTile(it){
   const t = el("div", "tile pv" + (it.rnd ? " rnd" : ""));
-  t.dataset.v = it.id;
+  t.dataset.v = it.id; setA11y(t);
   if (it.preview){
     const img = el("img");
     img.loading = "lazy"; img.alt = it.name; img.src = API + it.preview;
@@ -425,8 +564,11 @@ function previewTile(it){
 }
 function plainTile(it){
   const t = el("div", "tile" + (it.rnd ? " rnd" : ""), esc(it.name) + (it.sub ? `<small>${esc(it.sub)}</small>` : ""));
-  t.dataset.v = it.id;
+  t.dataset.v = it.id; setA11y(t);
   return t;
+}
+function markSel(box){
+  box.querySelectorAll(".tile").forEach(t => t.setAttribute("aria-pressed", t.classList.contains("sel")));
 }
 /* single select */
 function buildSingle(boxId, items, key, withPreview){
@@ -437,11 +579,14 @@ function buildSingle(boxId, items, key, withPreview){
     if (state[key] === it.id) t.classList.add("sel");
     box.appendChild(t);
   });
+  markSel(box);
   box.onclick = e => {
     const t = e.target.closest(".tile"); if (!t) return;
     state[key] = t.dataset.v;
     box.querySelectorAll(".tile").forEach(x => x.classList.toggle("sel", x === t));
+    markSel(box);
     if (key === "bg") $("bgFileWrap").style.display = state.bg === "custom" ? "block" : "none";
+    if (hooks[key]) hooks[key]();
   };
 }
 /* multi select + random */
@@ -449,9 +594,9 @@ function buildMulti(boxId, items, key, withPreview){
   const box = $(boxId), m = multi[key];
   box.innerHTML = "";
   const all = [...items, {id:"__random", name:"Random", sub:"Apne aap chuno", rnd:true}];
-  const paint = () => box.querySelectorAll(".tile").forEach(t => {
+  const paint = () => { box.querySelectorAll(".tile").forEach(t => {
     t.classList.toggle("sel", t.dataset.v === "__random" ? m.rnd : (!m.rnd && m.set.has(t.dataset.v)));
-  });
+  }); markSel(box); };
   all.forEach(it => box.appendChild(withPreview ? previewTile(it) : plainTile(it)));
   box.onclick = e => {
     const t = e.target.closest(".tile"); if (!t) return;
@@ -470,6 +615,11 @@ function multiVal(key){
 
 /* ---------- build everything from /api/options ---------- */
 let OPT = null;
+function wname(w){
+  const n = w.name;
+  const s = typeof n === "string" ? n : (n && (n.name || n.label)) || "";
+  return s || WEAPON_LABEL[w.id] || (w.id.charAt(0).toUpperCase() + w.id.slice(1));
+}
 function buildAll(o){
   OPT = o;
   buildChars(o.characters);
@@ -485,13 +635,85 @@ function buildAll(o){
   buildMulti("lightTiles", o.lights.map(l => ({id:l.id, name:l.name, preview:"/api/preview/light/" + l.id})), "lights", true);
   buildMulti("camTiles", o.cam_fx, "cam_fx", false);
   buildMulti("rotTiles", o.rotations, "rotations", false);
+
+  // battle mode + weapons (backend: battles / weapons)
+  const modes = (o.battles && o.battles.length ? o.battles : [{id:"off", name:"Dance (normal)"}, {id:"vs", name:"VS Fight"}])
+    .map(b => ({id:b.id, name:b.name, sub:b.id === "vs" ? "Team vs team ladai" : "Beat par dance"}));
+  buildSingle("modeTiles", modes, "battle", false);
+  let ws = (o.weapons || []).map(w => ({id:w.id, name:wname(w)}));
+  if (!ws.some(w => w.id === "random")) ws.push({id:"random", name:"Random", rnd:true});
+  if (!ws.some(w => w.id === state.weapon)) state.weapon = ws[0] ? ws[0].id : "talwar";
+  buildSingle("weaponTiles", ws, "weapon", false);
+  buildSingle("teamModeTiles", [
+    {id:"auto", name:"Auto", sub:"Apne aap barabar"},
+    {id:"manual", name:"Manual", sub:"Main khud chunuga"}], "teamMode", false);
+  hooks.battle = applyMode;
+  hooks.teamMode = renderTeams;
+  applyMode();
   buildCreator(o);
+}
+
+/* ---------- VS fight UI ---------- */
+function applyMode(){
+  const vs = state.battle === "vs";
+  $("battleSub").style.display = vs ? "block" : "none";
+  $("danceOnly").classList.toggle("dim", vs);
+  renderTeams();
+}
+function smallerTeam(){
+  let a = 0, b = 0;
+  picked.forEach(id => { if (teamOf[id] === 0) a++; else if (teamOf[id] === 1) b++; });
+  return a <= b ? 0 : 1;
+}
+function renderTeams(){
+  const box = $("teamBox");
+  const show = state.battle === "vs" && state.teamMode === "manual";
+  box.style.display = show ? "block" : "none";
+  if (!show) return;
+  box.innerHTML = "";
+  if (picked.length < 2){
+    box.appendChild(el("p", "hint", "Manual teams ke liye upar se kam se kam 2 characters chuno. Abhi Auto chalega."));
+    return;
+  }
+  picked.forEach(id => { if (teamOf[id] === undefined) teamOf[id] = smallerTeam(); });
+  picked.forEach((id, i) => {
+    const row = el("div", "trow");
+    row.appendChild(el("b", "", `${i + 1}. ${esc(nameOf(id))}`));
+    const seg = el("div", "seg");
+    [["A", 0, "a"], ["B", 1, "b"]].forEach(([lb, v, c]) => {
+      const b = el("button", c + (teamOf[id] === v ? " on" : ""), lb);
+      b.type = "button";
+      b.setAttribute("aria-pressed", teamOf[id] === v);
+      b.setAttribute("aria-label", `${nameOf(id)} Team ${lb}`);
+      b.onclick = () => { teamOf[id] = v; renderTeams(); };
+      seg.appendChild(b);
+    });
+    row.appendChild(seg);
+    box.appendChild(row);
+  });
+  box.appendChild(el("p", "hint", "A = pehli team, B = doosri team. Extra add hue dancers apne aap kam wali team me jaayenge."));
+}
+/* backend format: "1,2/3,4" (dancer numbers). Returns null if invalid. */
+function teamsValue(newRandom){
+  if (state.battle !== "vs" || state.teamMode !== "manual" || picked.length < 2) return "auto";
+  const A = [], B = [];
+  picked.forEach((id, i) => (teamOf[id] === 1 ? B : A).push(i + 1));
+  let base = picked.length + newRandom;
+  let total = Math.min(MAX, Math.max(base, parseInt($("count").value) || 0));
+  for (let k = picked.length + 1; k <= total; k++) (A.length <= B.length ? A : B).push(k);
+  if (!A.length || !B.length) return null;
+  return A.join(",") + "/" + B.join(",");
 }
 
 /* ---------- characters ---------- */
 function updateCount(){
   $("selCount").textContent = picked.length + " chune";
-  document.querySelectorAll(".char").forEach(el => el.classList.toggle("sel", picked.includes(el.dataset.id)));
+  document.querySelectorAll(".char").forEach(el => {
+    const on = picked.includes(el.dataset.id);
+    el.classList.toggle("sel", on);
+    el.setAttribute("aria-pressed", on);
+  });
+  renderTeams();
 }
 function buildChars(list){
   CHARS = list;
@@ -500,9 +722,10 @@ function buildChars(list){
   picked = picked.filter(id => list.some(c => c.id === id));
   list.forEach(c => {
     const d = el("div", "char");
-    d.dataset.id = c.id;
+    d.dataset.id = c.id; setA11y(d);
+    d.setAttribute("aria-label", c.name);
     d.innerHTML = `<div class="tick">✓</div>` +
-      (c.custom ? `<button class="del" title="Delete karo">✕</button><div class="cb">custom</div>` : "") +
+      (c.custom ? `<button class="del" title="Delete karo" aria-label="${esc(c.name)} delete karo">✕</button><div class="cb">custom</div>` : "") +
       `<img loading="lazy" src="${API}/api/preview/${encodeURIComponent(c.id)}" alt="${esc(c.name)}"><span>${esc(c.name)}</span>`;
     d.onclick = () => {
       if (picked.includes(c.id)) picked = picked.filter(x => x !== c.id);
@@ -562,12 +785,12 @@ function buildCreator(o){
   if (!sl.children.length){
     SLIDERS.forEach(([k, name, mn, mx, st, df]) => {
       const w = el("div", "", `<div class="rv"><span>${name}</span><b id="cv_${k}">${df}</b></div>
-        <input type="range" id="c_${k}" min="${mn}" max="${mx}" step="${st}" value="${df}">`);
+        <input type="range" id="c_${k}" min="${mn}" max="${mx}" step="${st}" value="${df}" aria-label="${name}">`);
       sl.appendChild(w);
       w.querySelector("input").oninput = e => { $("cv_" + k).textContent = e.target.value; };
     });
   }
-  const mk = (boxId, items, cls) => {
+  const mk = (boxId, items) => {
     const box = $(boxId); box.innerHTML = "";
     items.forEach(([val, label]) => {
       const lb = el("label", "", `<input type="checkbox" value="${val}">${esc(label)}`);
@@ -577,7 +800,6 @@ function buildCreator(o){
   };
   mk("cAccs", (o.accessories || []).map(a => [a, ACC_LABEL[a] || a]));
   mk("cMoves", (o.moves || MOVE_LABEL).map((m, i) => [i, MOVE_LABEL[i] || m]));
-  // default 4 moves
   [...$("cMoves").querySelectorAll("input")].slice(0, 4).forEach(i => { i.checked = true; i.parentElement.classList.add("on"); });
 }
 const checkedVals = id => [...$(id).querySelectorAll("input:checked")].map(i => i.value);
@@ -608,37 +830,112 @@ $("syncTiles").onclick = e => {
   const t = e.target.closest(".tile"); if (!t) return;
   state.sync = t.dataset.v;
   document.querySelectorAll("#syncTiles .tile").forEach(x => x.classList.toggle("sel", x === t));
+  markSel($("syncTiles"));
 };
 $("clothTiles").onclick = e => {
   const t = e.target.closest(".tile"); if (!t) return;
   state.cloth = t.dataset.v;
   document.querySelectorAll("#clothTiles .tile").forEach(x => x.classList.toggle("sel", x === t));
+  markSel($("clothTiles"));
   $("clothSub").style.display = state.cloth === "upload" ? "block" : "none";
   $("clothTarget").style.display = state.cloth === "none" ? "none" : "block";
 };
+[$("syncTiles"), $("clothTiles")].forEach(b => b.querySelectorAll(".tile").forEach(t => setA11y(t)));
+markSel($("syncTiles")); markSel($("clothTiles"));
 $("danceSpeed").oninput = e => { $("danceSpeedV").textContent = (+e.target.value).toFixed(1) + "x"; };
 $("rotSpeed").oninput = e => { $("rotSpeedV").textContent = (+e.target.value).toFixed(1) + "x"; };
-$("bgimg").onchange = () => { const f = $("bgimg").files[0]; $("bgName").textContent = f ? f.name : "Apni background image chuno"; };
-$("clothimg").onchange = () => { const f = $("clothimg").files[0]; $("clothName").textContent = f ? f.name : "Kapde ki image chuno"; };
-$("audio").onchange = () => { const f = $("audio").files[0]; $("audName").textContent = f ? f.name : "Song / funk audio chuno"; };
+function fileLabel(inputId, nameId, boxSel, dflt){
+  $(inputId).onchange = () => {
+    const f = $(inputId).files[0];
+    $(nameId).textContent = f ? f.name : dflt;
+    const box = document.querySelector(boxSel); if (box) box.classList.toggle("has", !!f);
+  };
+}
+fileLabel("bgimg", "bgName", 'label[for="bgimg"]', "Apni background image chuno");
+fileLabel("clothimg", "clothName", 'label[for="clothimg"]', "Kapde ki image chuno");
+fileLabel("audio", "audName", "#audBox", "Song / funk audio chuno");
 $("dice").onclick = () => { $("seed").value = Math.floor(Math.random() * 1000000); };
+$("count").onchange = renderTeams;
+
+/* keyboard: Enter / Space on tiles and characters */
+document.addEventListener("keydown", e => {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  const t = e.target;
+  if (t && t.matches && t.matches(".tile, .char")) { e.preventDefault(); t.click(); }
+});
+
+/* ---------- navigation ---------- */
+const SECTIONS = ["sec-chars", "sec-mode", "sec-stage", "sec-cam", "sec-audio"];
+const navLinks = [...document.querySelectorAll("#nav a")];
+function goTo(id){
+  const s = $(id); if (!s) return;
+  s.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion:reduce)").matches ? "auto" : "smooth", block:"start"});
+}
+navLinks.forEach(a => a.addEventListener("click", e => { e.preventDefault(); goTo(a.dataset.t); }));
+function setActive(id){ navLinks.forEach(a => { const on = a.dataset.t === id; a.classList.toggle("on", on); if (on) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); }); }
+const io = new IntersectionObserver(es => {
+  es.forEach(e => { if (e.isIntersecting) setActive(e.target.id); });
+}, {rootMargin:"-30% 0px -60% 0px"});
+[...SECTIONS, "outPanel"].forEach(id => io.observe($(id)));
+setActive("sec-chars");
+
+/* peeche / aage buttons at the end of each card (mobile) */
+SECTIONS.forEach((id, i) => {
+  const sec = $(id);
+  const row = el("div", "stepnav");
+  if (i > 0){ const b = el("button", "", "← Peeche"); b.type = "button"; b.onclick = () => goTo(SECTIONS[i - 1]); row.appendChild(b); }
+  if (i < SECTIONS.length - 1){ const b = el("button", "nx", "Aage →"); b.type = "button"; b.onclick = () => goTo(SECTIONS[i + 1]); row.appendChild(b); }
+  sec.appendChild(row);
+});
+
+/* floating "Video banao" button: hide when the real one is on screen */
+new IntersectionObserver(es => { $("fab").classList.toggle("hide", es[0].isIntersecting || $("go").disabled); }, {threshold:.4}).observe($("go"));
+$("fab").onclick = () => $("go").click();
+$("goSide").onclick = () => $("go").click();
+function setBusy(b){
+  $("go").disabled = b; $("goSide").disabled = b;
+  $("fab").disabled = b; if (b) $("fab").classList.add("hide");
+}
 
 /* ---------- generate ---------- */
+function postForm(url, fd, onProg){
+  return new Promise((res, rej) => {
+    const x = new XMLHttpRequest();
+    x.open("POST", url);
+    x.upload.onprogress = e => { if (e.lengthComputable) onProg(e.loaded / e.total); };
+    x.onload = () => {
+      let j = null; try{ j = JSON.parse(x.responseText); }catch(_){}
+      if (x.status >= 200 && x.status < 300 && j) return res(j);
+      let d = j && j.detail;
+      if (d && typeof d !== "string") d = JSON.stringify(d);
+      rej(new Error(d || ("HTTP " + x.status)));
+    };
+    x.onerror = () => rej(new Error("Network error - internet ya server check karo"));
+    x.ontimeout = () => rej(new Error("Upload timeout"));
+    x.send(fd);
+  });
+}
+
 $("go").onclick = async () => {
   const f = $("audio").files[0];
-  if (!f) return alert("Pehle audio file chuno.");
+  if (!f){ goTo("sec-audio"); return alert("Pehle audio file chuno."); }
   if (state.bg === "custom" && !$("bgimg").files[0]) return alert("Custom background ke liye image chuno ya koi aur background lo.");
   if (state.cloth === "upload" && !$("clothimg").files[0]) return alert("Kapde ki image chuno ya koi aur cloth option lo.");
 
+  const newRandom = parseInt($("newRandom").value) || 0;
+  const vs = state.battle === "vs";
+  const teams = teamsValue(newRandom);
+  if (teams === null){ goTo("sec-mode"); return alert("Dono teams me kam se kam ek dancer hona chahiye."); }
+
   $("outPanel").style.display = "block";
-  $("outPanel").scrollIntoView({behavior:"smooth", block:"start"});
+  $("navOut").hidden = false;
+  goTo("outPanel");
   $("err").textContent = "";
   $("result").innerHTML = "";
   $("barfill").style.width = "0%";
   $("msg").textContent = "Upload ho raha hai...";
-  $("go").disabled = true;
+  setBusy(true);
 
-  const newRandom = parseInt($("newRandom").value) || 0;
   const fd = new FormData();
   fd.append("audio", f);
   if (state.bg === "custom") fd.append("bg_image", $("bgimg").files[0]);
@@ -662,24 +959,54 @@ $("go").onclick = async () => {
   fd.append("res", $("res").value);
   fd.append("fps", $("fps").value);
   fd.append("seed", $("seed").value === "" ? -1 : $("seed").value);
+  fd.append("battle", vs ? "vs" : "off");
+  fd.append("weapon", state.weapon);
+  fd.append("teams", teams);
+  fd.append("team_a", ($("teamA").value || "TEAM RED").trim());
+  fd.append("team_b", ($("teamB").value || "TEAM BLUE").trim());
 
   try{
-    const r = await fetch(API + "/api/generate", {method:"POST", body:fd});
-    if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || ("HTTP " + r.status));
-    const j = await r.json();
+    const j = await postForm(API + "/api/generate", fd, p => {
+      const pc = Math.round(p * 100);
+      $("barfill").style.width = Math.round(p * 10) + "%";
+      $("msg").textContent = pc < 100 ? `Upload ho raha hai... ${pc}%` : "Server process kar raha hai...";
+    });
     window.__meta = j;
-    poll(j.job_id);
+    poll(j.job_id, 0);
     if (newRandom > 0) refreshChars().catch(() => {});   // naye random characters list me dikhein
   }catch(e){
     $("err").textContent = "Error: " + e.message;
-    $("go").disabled = false;
+    $("msg").textContent = "";
+    setBusy(false);
   }
 };
 
 function nameOf(id){ const c = CHARS.find(x => x.id === id); return c ? c.name : id; }
 function listOf(a){ return (a && a.length) ? a.join(", ") : "none"; }
 
-async function poll(id){
+async function saveVideo(url, btn){
+  const old = btn.textContent;
+  btn.disabled = true; btn.textContent = "Ho raha hai...";
+  try{
+    const r = await fetch(url);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const b = await r.blob();
+    const file = new File([b], "dance_short.mp4", {type:"video/mp4"});
+    if (navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file], title:"Dance Short"});
+    } else {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(b); a.download = "dance_short.mp4";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+    }
+  }catch(e){
+    if (e && e.name !== "AbortError") window.open(url, "_blank");
+  }
+  btn.disabled = false; btn.textContent = old;
+}
+
+async function poll(id, fails){
   try{
     const r = await fetch(API + "/api/status/" + id);
     if (!r.ok) throw new Error("HTTP " + r.status);
@@ -690,26 +1017,38 @@ async function poll(id){
       const url = API + "/api/video/" + id;
       const wide = (() => { const [w, h] = $("res").value.split("x").map(Number); return w > h; })();
       const m = window.__meta || {};
+      const fight = m.battle ? `Mode: VS Fight &nbsp;|&nbsp; Weapon: ${esc(m.weapon ?? "")} &nbsp;|&nbsp; Teams: ${esc(Array.isArray(m.teams) ? m.teams.join(",") : (m.teams ?? ""))}<br>` : "";
       $("result").innerHTML =
-        `<video controls playsinline class="${wide ? "wide" : ""}" src="${url}"></video>
-         <a href="${url}" download="dance_short.mp4"><button class="go" style="width:auto">⬇ MP4 download karo</button></a>
+        `<video controls playsinline preload="metadata" class="${wide ? "wide" : ""}" src="${url}"></video>
+         <div class="resbtns">
+           <button class="go" id="saveBtn">⬇ Download / Share</button>
+           <button class="alt" id="againBtn">🔁 Naya video</button>
+         </div>
          <div class="meta">
-           Seed: ${esc(m.seed ?? "")} &nbsp;|&nbsp; Dancers: ${esc((m.characters || []).map(nameOf).join(", "))}<br>
+           ${fight}Seed: ${esc(m.seed ?? "")} &nbsp;|&nbsp; Dancers: ${esc((m.characters || []).map(nameOf).join(", "))}<br>
            Stage: ${esc(m.stage ?? "")} &nbsp;|&nbsp; Lights: ${esc(listOf(m.lights))} &nbsp;|&nbsp; Camera: ${esc(listOf(m.cam_fx))}<br>
-           Rotation: ${esc(listOf(m.rotations))} &nbsp;|&nbsp; Speed: ${esc(m.speed_mode ?? "")} &nbsp;|&nbsp; Cloth: ${esc(m.cloth_mode ?? "")}
+           Rotation: ${esc(listOf(m.rotations))} &nbsp;|&nbsp; Speed: ${esc(m.speed_mode ?? "")} &nbsp;|&nbsp; Cloth: ${esc(m.cloth_mode ?? "")}<br>
+           <a href="${url}" target="_blank" rel="noopener">Direct video link</a>
          </div>`;
-      $("go").disabled = false;
+      $("saveBtn").onclick = e => saveVideo(url, e.currentTarget);
+      $("againBtn").onclick = () => { $("seed").value = Math.floor(Math.random() * 1000000); goTo("sec-chars"); };
+      setBusy(false);
       return;
     }
     if (j.status === "error"){
       $("err").textContent = "Error: " + j.error;
-      $("go").disabled = false;
+      setBusy(false);
       return;
     }
-    setTimeout(() => poll(id), 900);
+    setTimeout(() => poll(id, 0), 900);
   }catch(e){
+    // mobile network blip: kuch baar dobara try karo
+    if (fails < 6){
+      $("msg").textContent = "Connection slow hai, dobara try ho raha hai...";
+      return setTimeout(() => poll(id, fails + 1), 2500);
+    }
     $("err").textContent = "Connection issue: " + e.message;
-    $("go").disabled = false;
+    setBusy(false);
   }
 }
 
