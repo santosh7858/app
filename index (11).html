@@ -1,0 +1,2312 @@
+<!DOCTYPE html>
+<html lang="hi-Latn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff8ec">
+<title>Dance Shorts Studio</title>
+<style>
+  :root {
+    --paper:#fff8ec; --ink:#1d1b26; --white:#ffffff;
+    --yellow:#ffd23f; --pink:#ff6b9d; --blue:#4cc9f0; --green:#7bd88f; --purple:#b69cff; --orange:#ff9f5a; --red:#ff5a5f;
+    --muted:#6b6678; --line:3px solid var(--ink);
+    --shadow:5px 5px 0 var(--ink);
+    --r:16px;
+    --nav-h:64px;
+    --safe-b:env(safe-area-inset-bottom,0px);
+    --safe-t:env(safe-area-inset-top,0px);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+  body{
+    margin:0;color:var(--ink);
+    font-family:"Trebuchet MS","Segoe UI",system-ui,Roboto,sans-serif;
+    background-color:var(--paper);
+    background-image:radial-gradient(#e9d9b8 1.5px, transparent 1.5px);
+    background-size:22px 22px;
+    overflow-x:hidden;
+  }
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+
+  /* ---------- layout ---------- */
+  .app{max-width:1180px;margin:0 auto;padding:0 12px calc(var(--nav-h) + var(--safe-b) + 90px)}
+  .side{display:contents}
+  main{min-width:0}
+  section.card{scroll-margin-top:84px}
+
+  /* ---------- header ---------- */
+  .top{
+    position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:calc(8px + var(--safe-t)) 12px 8px;margin:0 -12px 14px;
+    background:var(--paper);border-bottom:var(--line)}
+  .logo{display:flex;align-items:center;gap:10px;min-width:0}
+  .logo .badge{
+    width:40px;height:40px;border:var(--line);border-radius:12px;background:var(--yellow);
+    box-shadow:3px 3px 0 var(--ink);display:grid;place-items:center;font-size:22px;transform:rotate(-6deg);flex:none}
+  h1{margin:0;font-size:clamp(17px,5vw,28px);line-height:1.05;letter-spacing:-.5px}
+  h1 em{font-style:normal;background:var(--pink);padding:0 6px;border:var(--line);border-radius:9px;display:inline-block;transform:rotate(2deg);margin-left:2px}
+  .tag{display:none;font-size:13px;color:var(--muted);margin-top:6px}
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;border:var(--line);border-radius:999px;background:var(--white);
+    padding:6px 12px;font-weight:700;font-size:12px;box-shadow:3px 3px 0 var(--ink);min-width:0;flex:0 1 auto}
+  .pill #statusTxt{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:34vw}
+  .dot{width:11px;height:11px;border-radius:50%;background:#bbb;border:2px solid var(--ink);flex:none}
+  .pill.ok .dot{background:var(--green)} .pill.wait .dot{background:var(--yellow);animation:blink 1s infinite} .pill.bad .dot{background:var(--pink)}
+  @keyframes blink{50%{opacity:.25}}
+  .pill button{padding:3px 10px;font-size:12px;box-shadow:none;border-width:2px;min-height:0}
+
+  /* ---------- navigation ---------- */
+  .nav{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;display:grid;grid-auto-flow:column;grid-auto-columns:1fr;
+    background:var(--white);border-top:var(--line);padding-bottom:var(--safe-b)}
+  .nav a{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:var(--nav-h);
+    padding:6px 2px;text-decoration:none;color:var(--ink);font-size:11px;font-weight:800;border-right:2px solid var(--ink);
+    position:relative;-webkit-user-select:none;user-select:none}
+  .nav a:last-child{border-right:0}
+  .nav a .ic{font-size:20px;line-height:1}
+  .nav a.on{background:var(--yellow)}
+  .nav a.on::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--ink)}
+  .nav a[hidden]{display:none}
+  .sidego{display:none}
+  .fab{
+    position:fixed;right:12px;bottom:calc(var(--nav-h) + var(--safe-b) + 12px);z-index:45;
+    background:var(--yellow);font-size:15px;padding:12px 18px;border-radius:999px;box-shadow:4px 4px 0 var(--ink)}
+  .fab.hide{display:none}
+  .stepnav{display:flex;justify-content:space-between;gap:10px;margin-top:20px;padding-top:14px;border-top:3px dashed var(--ink)}
+  .stepnav button{flex:1;background:var(--paper)}
+  .stepnav button.nx{background:var(--blue)}
+
+  /* ---------- cards ---------- */
+  .card{background:var(--white);border:var(--line);border-radius:var(--r);box-shadow:4px 4px 0 var(--ink);padding:14px;margin-bottom:20px;position:relative}
+  .card h2{margin:0 0 4px;font-size:18px;display:flex;align-items:center;gap:10px}
+  .num{width:30px;height:30px;border:var(--line);border-radius:50%;display:grid;place-items:center;font-size:14px;background:var(--blue);flex:none}
+  .card.c2 .num{background:var(--pink)}
+  .card.c3 .num{background:var(--green)}
+  .card.c4 .num{background:var(--purple)}
+  .card.c5 .num{background:var(--orange)}
+  .card.c6 .num{background:var(--yellow)}
+  .hint{font-size:13px;color:var(--muted);margin:0 0 14px;line-height:1.45}
+
+  label.l{display:block;font-weight:700;font-size:13px;margin:18px 0 8px}
+  label.l small{font-weight:600;color:var(--muted)}
+  input[type=number],input[type=text],select{
+    width:100%;min-height:46px;padding:10px 12px;border:var(--line);border-radius:12px;background:var(--paper);color:var(--ink);font:inherit;font-size:16px;font-weight:600}
+  input[type=color]{width:100%;height:46px;border:var(--line);border-radius:12px;background:var(--paper);padding:2px;cursor:pointer}
+  input[type=range]{width:100%;accent-color:var(--pink);height:34px;margin:0}
+  .rv{display:flex;justify-content:space-between;font-weight:800;font-size:13px}
+
+  .file{
+    display:flex;align-items:center;gap:12px;border:3px dashed var(--ink);border-radius:14px;padding:14px;
+    background:var(--paper);cursor:pointer;transition:.15s;min-height:64px}
+  .file:hover{background:#fff1cc}
+  .file .ic{font-size:26px}
+  .file b{display:block;font-size:14px;word-break:break-all}
+  .file small{color:var(--muted)}
+  .file.has{border-style:solid;background:#e9fbe9}
+
+  button{font:inherit;font-weight:800;cursor:pointer;border:var(--line);border-radius:12px;padding:10px 16px;min-height:44px;background:var(--white);color:var(--ink);
+    box-shadow:3px 3px 0 var(--ink);transition:transform .08s, box-shadow .08s;touch-action:manipulation}
+  button:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
+  button:disabled{opacity:.55;cursor:not-allowed;transform:none;box-shadow:3px 3px 0 var(--ink)}
+  .go{background:var(--yellow);font-size:17px;padding:14px 26px;width:100%}
+  @media (hover:hover){
+    button:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--ink)}
+    button:disabled:hover{transform:none;box-shadow:3px 3px 0 var(--ink)}
+    .char:hover{transform:translateY(-3px) rotate(-1deg);box-shadow:4px 4px 0 var(--ink)}
+    .tile:hover{transform:translateY(-2px);box-shadow:3px 3px 0 var(--ink)}
+  }
+
+  /* ---------- characters ---------- */
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .chip{background:var(--yellow);border:var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:800}
+  .toolbar button{padding:8px 12px;font-size:13px;flex:1 1 auto}
+  .toolbar select{width:auto;border-radius:10px;padding:6px 8px;min-height:44px;flex:0 0 auto}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+  .char{border:var(--line);border-radius:14px;overflow:hidden;background:var(--paper);cursor:pointer;text-align:center;position:relative;
+    transition:transform .12s, box-shadow .12s;user-select:none}
+  .char img{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;background:#ddd;border-bottom:var(--line)}
+  .char span{display:block;padding:6px 4px;font-size:12.5px;font-weight:800}
+  .char.sel{background:var(--pink);box-shadow:4px 4px 0 var(--ink);transform:translateY(-3px)}
+  .char .tick{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:var(--green);border:var(--line);
+    display:none;place-items:center;font-size:14px;font-weight:900}
+  .char.sel .tick{display:grid}
+  .char .del{position:absolute;top:4px;left:4px;width:32px;height:32px;min-height:0;border-radius:50%;padding:0;background:var(--white);
+    border:var(--line);box-shadow:none;font-size:12px;line-height:1;display:grid;place-items:center}
+  .char .cb{position:absolute;bottom:34px;left:6px;background:var(--purple);border:2px solid var(--ink);border-radius:8px;font-size:10px;font-weight:800;padding:1px 6px}
+  .skel{aspect-ratio:9/16;background:linear-gradient(90deg,#f0e6cf,#fff8ec,#f0e6cf);background-size:200% 100%;animation:sh 1.2s infinite;border:var(--line);border-radius:14px}
+  @keyframes sh{to{background-position:-200% 0}}
+
+  /* ---------- creator ---------- */
+  details.creator{border:var(--line);border-radius:14px;background:var(--paper);margin-top:16px;padding:0}
+  details.creator summary{cursor:pointer;font-weight:800;padding:14px;list-style:none;min-height:48px}
+  details.creator summary::-webkit-details-marker{display:none}
+  details.creator[open] summary{border-bottom:var(--line)}
+  .cbody{padding:14px}
+  .colors{display:grid;grid-template-columns:repeat(auto-fit,minmax(86px,1fr));gap:10px}
+  .colors div label{display:block;font-size:12px;font-weight:800;margin-bottom:4px}
+  .sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:6px 16px}
+  .checks{display:flex;flex-wrap:wrap;gap:8px}
+  .checks label{border:var(--line);border-radius:999px;padding:9px 14px;font-size:13px;font-weight:800;background:var(--white);cursor:pointer;user-select:none}
+  .checks label.on{background:var(--green)}
+  .checks input{position:absolute;opacity:0;pointer-events:none}
+  .checks label:focus-within{outline:3px solid var(--blue);outline-offset:2px}
+
+  /* ---------- option tiles ---------- */
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+  .tiles.pvs{grid-template-columns:repeat(auto-fill,minmax(88px,1fr))}
+  .tile{border:var(--line);border-radius:12px;padding:11px;background:var(--paper);cursor:pointer;font-weight:800;font-size:14px;transition:.12s;user-select:none;position:relative;min-height:48px}
+  .tile small{display:block;font-weight:600;color:var(--muted);font-size:12px;margin-top:2px}
+  .tile.sel{background:var(--blue);box-shadow:3px 3px 0 var(--ink)}
+  .tile.rnd{border-style:dashed}
+  .tiles.g .tile.sel{background:var(--green)}
+  .tiles.p .tile.sel{background:var(--pink)}
+  .tiles.y .tile.sel{background:var(--yellow)}
+  .tiles.o .tile.sel{background:var(--orange)}
+  .tiles.r .tile.sel{background:var(--red);color:#fff}
+  .tiles.r .tile.sel small{color:#ffe9e9}
+  .tile.pv{padding:0;overflow:hidden;text-align:center;font-size:12.5px}
+  .tile.pv img{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;background:#ddd;border-bottom:var(--line)}
+  .tile.pv .ph{aspect-ratio:9/16;display:grid;place-items:center;font-size:34px;border-bottom:var(--line);background:#ece0c6}
+  .tile.pv span{display:block;padding:6px 4px}
+  .tile.pv.sel::after{content:"✓";position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:var(--white);border:var(--line);display:grid;place-items:center;font-size:13px;color:var(--ink)}
+  .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+  .seedbox{display:flex;gap:8px}
+  .seedbox button{padding:8px 14px}
+  .sub{display:none;margin-top:12px}
+  .dim{opacity:.45;pointer-events:none;filter:grayscale(.6)}
+
+  /* ---------- battle ---------- */
+  .battle{border:var(--line);border-radius:14px;background:#fff0f0;padding:14px;margin-top:14px}
+  .battle h3{margin:0 0 4px;font-size:16px}
+  .names{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .names .a input{border-color:var(--red)} .names .b input{border-color:#1b8fd1}
+  .trow{display:flex;align-items:center;justify-content:space-between;gap:10px;border:var(--line);border-radius:12px;background:var(--white);padding:6px 6px 6px 12px;margin-bottom:8px}
+  .trow b{font-size:13.5px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .seg{display:flex;flex:none;gap:6px}
+  .seg button{min-height:40px;padding:6px 14px;box-shadow:none;border-radius:10px;font-size:13px}
+  .seg button.on.a{background:var(--red);color:#fff}
+  .seg button.on.b{background:var(--blue)}
+
+  /* ---------- output ---------- */
+  .bar{height:24px;border:var(--line);border-radius:999px;background:var(--paper);overflow:hidden}
+  .bar i{display:block;height:100%;width:0;border-right:var(--line);background:repeating-linear-gradient(45deg,var(--pink) 0 12px,var(--yellow) 12px 24px);transition:width .35s}
+  #msg{margin-top:10px;font-weight:700;font-size:14px;min-height:20px}
+  #err{margin-top:8px;font-weight:800;color:#c0173f}
+  #result{margin-top:14px;text-align:center}
+  #result video{width:100%;max-width:340px;max-height:72vh;max-height:72dvh;border:var(--line);border-radius:16px;box-shadow:var(--shadow);background:#000;display:block;margin:0 auto 18px}
+  #result video.wide{max-width:640px}
+  .resbtns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+  .resbtns .go{width:auto;flex:1 1 220px}
+  .resbtns .alt{background:var(--white);font-size:15px;padding:12px 18px;flex:0 1 auto}
+  .meta{font-size:12.5px;color:var(--muted);margin-top:12px;line-height:1.7;text-align:left;word-break:break-word}
+
+  /* ---------- library tabs / saved ---------- */
+  .tabs{display:flex;gap:8px}
+  .tabs button{flex:1;box-shadow:none;padding:8px 6px;font-size:13px}
+  .tabs button.on,.toolbar button.on{background:var(--yellow);box-shadow:3px 3px 0 var(--ink)}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+  .chips button{min-height:34px;padding:4px 10px;font-size:12px;box-shadow:none;border-radius:999px}
+  .chips button.on{background:var(--blue)}
+  .tabhide{display:none!important}
+  .lpanel{display:none}.lpanel.on{display:block}
+  .lrow{display:block;border:var(--line);border-radius:12px;padding:6px 8px;margin-bottom:8px;background:var(--paper);cursor:pointer}
+  .lrow .lh{display:flex;align-items:center;gap:8px}
+  .lpl{margin-top:8px;padding-top:8px;border-top:3px dashed var(--ink);cursor:default}
+  .wf{width:100%;height:84px;display:block;border:var(--line);border-radius:10px;background:var(--white);touch-action:none;cursor:ew-resize}
+  .ptime{display:flex;justify-content:space-between;gap:8px;font-size:12px;font-weight:800;margin:6px 0}
+  .pctl{display:flex;align-items:center;gap:8px}
+  .pctl .seek{flex:1;min-width:0}
+  .pctl button{min-height:40px;padding:4px 12px;box-shadow:none}
+  .prow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0 6px}
+  .prow label{font-size:12px;font-weight:800}
+  .prow input{min-height:40px;padding:6px 10px;margin-top:4px}
+  .perr{color:#c0173f;font-weight:800;font-size:12px;min-height:0}
+  .lrow.sel,.lcell.sel{background:var(--green)}
+  .lrow .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700;font-size:13.5px}
+  .lrow button{min-height:36px;min-width:36px;padding:2px 8px;box-shadow:none}
+  .lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+  .lcell{border:var(--line);border-radius:12px;overflow:hidden;background:var(--paper);cursor:pointer;position:relative}
+  .lcell img{width:100%;aspect-ratio:1;object-fit:cover;display:block;border-bottom:var(--line);background:#ddd}
+  .lcell span{display:block;padding:4px 6px;font-size:11.5px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .lcell .hb{position:absolute;top:4px;right:4px;min-height:32px;min-width:32px;padding:0;border-radius:50%;box-shadow:none}
+  .pager{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
+  .vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:12px}
+  .vcell video{width:100%;aspect-ratio:9/16;object-fit:cover;border:var(--line);border-radius:12px;background:#000}
+  .vcell.w video{aspect-ratio:16/9}
+  .vcell .vb{display:flex;gap:6px;margin-top:6px}
+  .vcell .vb button{flex:1;min-height:36px;padding:2px 6px}
+  .vcell small{display:block;color:var(--muted);font-size:11px;margin-top:4px;word-break:break-word}
+
+  .tabs button{padding:8px 4px;font-size:12px}
+  .lrow .nm small{font-weight:600;color:var(--muted)}
+  /* ---------- saved: gallery grid ---------- */
+  .sgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px;margin-top:12px}
+  .sgrid .empty{grid-column:1/-1;margin:0}
+  .scell{position:relative;aspect-ratio:9/16;border:var(--line);border-radius:12px;overflow:hidden;background:#000;cursor:pointer;user-select:none;-webkit-user-select:none}
+  .scell.w{aspect-ratio:16/9;grid-column:span 2}
+  .scell video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+  .scell .pl{position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center;font-size:11px}
+  .scell .mu{position:absolute;left:0;right:0;bottom:0;padding:18px 6px 5px;color:#fff;font-size:10.5px;font-weight:800;background:linear-gradient(transparent,rgba(0,0,0,.85));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  @media (hover:hover){ .scell:hover{transform:translateY(-2px);box-shadow:3px 3px 0 var(--ink)} }
+
+  /* ---------- saved: full-screen viewer ---------- */
+  body.vopen{overflow:hidden}
+  #viewer{position:fixed;inset:0;z-index:100;background:#000;display:none;justify-content:center}
+  #viewer.on{display:flex}
+  .vfeed{height:100%;width:100%;max-width:480px;overflow-y:auto;scroll-snap-type:y mandatory;scrollbar-width:none;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  .vfeed::-webkit-scrollbar{display:none}
+  .vclose{position:absolute;top:calc(10px + var(--safe-t));left:10px;z-index:3;width:44px;height:44px;border-radius:50%;padding:0;font-size:18px}
+  .vcount{position:absolute;top:calc(20px + var(--safe-t));right:14px;z-index:3;color:#fff;font-weight:800;font-size:13px;text-shadow:0 1px 3px #000;pointer-events:none}
+  .fitem{height:100%;scroll-snap-align:start;scroll-snap-stop:always;position:relative;background:#000;cursor:pointer}
+  .fitem video{width:100%;height:100%;object-fit:contain;display:block}
+  .fside{position:absolute;right:8px;bottom:calc(90px + var(--safe-b));display:flex;flex-direction:column;gap:10px;z-index:2}
+  .fside button{width:48px;height:48px;min-height:0;padding:0;border-radius:50%;font-size:19px}
+  .finfo{position:absolute;left:0;right:68px;bottom:0;padding:34px 12px calc(14px + var(--safe-b));color:#fff;font-size:12px;font-weight:700;background:linear-gradient(transparent,rgba(0,0,0,.8));pointer-events:none;word-break:break-word;line-height:1.5}
+  .fmusic{pointer-events:auto;display:inline-flex;align-items:center;gap:6px;max-width:100%;background:rgba(255,255,255,.2);border:2px solid #fff;border-radius:999px;color:#fff;font:inherit;font-size:12.5px;font-weight:800;padding:6px 12px;min-height:38px;margin-bottom:4px}
+  .fmusic span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fmusic:hover,.fmusic:active{transform:none;box-shadow:none}
+  .fbar{position:absolute;left:0;bottom:0;height:3px;background:var(--pink);width:0;pointer-events:none}
+  .fpp{position:absolute;inset:0;display:grid;place-items:center;font-size:56px;color:#fff;opacity:0;pointer-events:none;transition:opacity .2s}
+  .fitem.paused .fpp{opacity:.85}
+  .msheet{position:absolute;inset:0;z-index:5;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.55)}
+  .msheet.on{display:flex}
+  .mbox{width:100%;max-width:480px;background:var(--paper);border:var(--line);border-bottom:0;border-radius:20px 20px 0 0;padding:16px 16px calc(16px + var(--safe-b));max-height:85vh;max-height:85dvh;overflow:auto;cursor:default}
+  .mbox h3{margin:0 0 8px;font-size:16px}
+  .mname{font-weight:800;word-break:break-word;font-size:15px}
+  .mclip{font-size:13px;color:var(--muted);margin:4px 0 12px;font-weight:700}
+  .macts{display:grid;gap:8px}
+  .macts button{width:100%;text-align:left}
+  .mmsg{font-size:12.5px;font-weight:800;min-height:18px;margin-top:8px}
+  .vfeed{user-select:none;-webkit-user-select:none}
+  @media (hover:hover) and (pointer:fine){ .vfeed{cursor:grab} .scell{cursor:grab} }
+  .vnav{position:absolute;right:18px;z-index:3;width:48px;height:48px;border-radius:50%;padding:0;font-size:18px}
+  .vnav.up{top:calc(50% - 56px)} .vnav.dn{top:calc(50% + 8px)}
+  @media (hover:none), (max-width:560px){ .vnav{display:none} }
+
+  footer{text-align:center;font-size:12px;color:var(--muted);margin-top:10px}
+
+  /* ---------- small phones ---------- */
+  @media (max-width:380px){
+    .names{grid-template-columns:1fr}
+    .tiles{grid-template-columns:repeat(2,1fr)}
+    .pill #statusTxt{max-width:26vw}
+    .nav a{font-size:10px}
+  }
+
+  /* ---------- tablet ---------- */
+  @media (min-width:600px){
+    .app{padding-left:18px;padding-right:18px}
+    .top{margin:0 -18px 16px;padding-left:18px;padding-right:18px}
+    .card{padding:18px}
+    .grid{grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:12px}
+    .tiles.pvs{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}
+    .pill #statusTxt{max-width:none}
+    .tag{display:block}
+  }
+
+  /* ---------- desktop: sidebar navigation ---------- */
+  @media (min-width:960px){
+    .app{display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px;padding-bottom:60px;align-items:start}
+    .side{display:flex;flex-direction:column;gap:14px;position:sticky;top:16px;padding-top:16px}
+    .top{position:static;flex-direction:column;align-items:flex-start;border:0;margin:0;padding:0;background:none}
+    .top .logo{align-items:flex-start}
+    .top .logo .badge{width:54px;height:54px;font-size:28px}
+    h1{font-size:26px}
+    .pill{box-shadow:3px 3px 0 var(--ink)}
+    .nav{position:static;display:flex;flex-direction:column;gap:8px;background:none;border:0;padding:0}
+    .nav a{
+      flex-direction:row;justify-content:flex-start;gap:10px;min-height:48px;padding:8px 12px;font-size:14px;
+      border:var(--line);border-radius:12px;background:var(--white);box-shadow:3px 3px 0 var(--ink)}
+    .nav a:last-child{border-right:var(--line)}
+    .nav a.on{background:var(--yellow)}
+    .nav a.on::before{display:none}
+    .fab{display:none}
+    .sidego{display:block;font-size:16px;padding:14px}
+    main{padding-top:16px}
+    section.card{scroll-margin-top:18px}
+    .stepnav{max-width:520px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    html{scroll-behavior:auto}
+  }
+
+  /* ================= PAPER THEME (smooth, handmade-paper look) ================= */
+  :root{
+    --paper:#f4ecda; --ink:#2b2735; --white:#fffdf6;
+    --yellow:#f7d56a; --pink:#f291ae; --blue:#86cdea; --green:#a0dcab; --purple:#c3b2f2; --orange:#f6b17c; --red:#ee6b6b;
+    --muted:#7b7289;
+    --line:1.5px solid rgba(43,39,53,.78);
+    --soft:0 6px 14px -6px rgba(70,45,20,.38), 0 1px 3px rgba(70,45,20,.16);
+    --lift:0 16px 26px -10px rgba(70,45,20,.48), 0 3px 6px rgba(70,45,20,.14);
+    --sheets:3px 4px 0 -1px #efe4cc, 6px 8px 0 -2px #e7dbbf, 9px 20px 24px -8px rgba(70,45,20,.42);
+    --ease:cubic-bezier(.22,.9,.28,1);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .42  0 0 0 0 .32  0 0 0 0 .18  0 0 0 .11 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  ::selection{background:var(--yellow);color:var(--ink)}
+  *{scrollbar-width:thin;scrollbar-color:rgba(43,39,53,.28) transparent}
+  body{
+    background-color:var(--paper);
+    background-image:var(--grain),radial-gradient(1100px 520px at 50% -8%,rgba(255,255,255,.75),transparent 62%),radial-gradient(rgba(120,90,50,.11) 1px,transparent 1.3px);
+    background-size:180px 180px,auto,26px 26px}
+
+  /* header: ek kata hua kagaz, neeche scalloped edge */
+  .top{background:var(--paper) var(--grain);border-bottom:0;box-shadow:0 8px 14px -12px rgba(70,45,20,.6)}
+  .top::after{content:"";position:absolute;left:0;right:0;top:100%;height:9px;pointer-events:none;
+    background:radial-gradient(circle at 7px 0,var(--paper) 6px,transparent 6.6px) 0 0/14px 9px repeat-x;filter:drop-shadow(0 2px 1px rgba(70,45,20,.16))}
+  h1{font-family:var(--serif);font-weight:800;letter-spacing:-.3px}
+  h1 em{font-style:italic;border:0;border-radius:3px;padding:0 5px;transform:rotate(-1.5deg);
+    background:linear-gradient(transparent 52%,var(--pink) 52%,var(--pink) 90%,transparent 90%)}
+  .logo .badge{border:1.5px solid rgba(43,39,53,.7);border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff3b0,var(--yellow));box-shadow:var(--soft);transform:rotate(-9deg)}
+  .tag{font-family:var(--serif);font-style:italic}
+  .pill{border:1.5px solid rgba(43,39,53,.5);background:var(--white) var(--grain);box-shadow:var(--soft)}
+  .dot{border-width:1.5px}
+
+  /* cards: tape laga hua, parat-dar sheets */
+  .card{
+    background-color:var(--white);background-image:var(--grain);
+    border:1px solid rgba(43,39,53,.12);border-radius:7px 9px 8px 10px / 9px 7px 10px 8px;
+    box-shadow:var(--sheets);padding:22px 16px 16px;margin-bottom:34px;
+    animation:sheetIn .55s var(--ease) both}
+  .card::before{content:"";position:absolute;top:-12px;left:50%;width:92px;height:24px;margin-left:-46px;transform:rotate(-2.5deg);
+    background:var(--yellow);opacity:.78;pointer-events:none;
+    clip-path:polygon(2% 0,98% 0,100% 18%,97% 38%,100% 58%,97% 80%,100% 100%,2% 100%,0 82%,3% 60%,0 40%,3% 20%)}
+  .card.c2::before{background:var(--pink);transform:rotate(2deg)}
+  .card.c3::before{background:var(--green);transform:rotate(-1deg)}
+  .card.c4::before{background:var(--purple);transform:rotate(3deg)}
+  .card.c5::before{background:var(--orange);transform:rotate(-3deg)}
+  .card.c6::before{background:var(--blue);transform:rotate(1.5deg)}
+  @keyframes sheetIn{from{opacity:0;transform:translateY(16px) rotate(-.5deg)}to{opacity:1;transform:none}}
+  .card h2{font-family:var(--serif);font-size:22px;letter-spacing:-.2px;margin-bottom:6px}
+  .num{width:34px;height:34px;border:2px solid rgba(43,39,53,.72);font-family:var(--serif);font-weight:800;
+    box-shadow:inset 0 0 0 3px rgba(255,255,255,.55);transform:rotate(-8deg)}
+  .hint{font-family:var(--serif);font-size:14px;line-height:1.55}
+  label.l{font-family:var(--serif);font-size:14.5px;letter-spacing:.1px}
+  footer{font-family:var(--serif);font-style:italic}
+
+  /* buttons: kate hue kagaz ke patte, dabane par dhans jaate hain */
+  button{
+    border:1.5px solid rgba(43,39,53,.82);border-radius:14px;background:linear-gradient(#fffefa,#f6eedc);
+    box-shadow:0 3px 0 rgba(43,39,53,.82),0 8px 12px -6px rgba(70,45,20,.4);
+    transition:transform .24s var(--ease),box-shadow .24s var(--ease),background .25s}
+  button:active{transform:translateY(3px);box-shadow:0 0 0 rgba(43,39,53,.82),0 1px 2px rgba(70,45,20,.3)}
+  button:disabled{box-shadow:0 3px 0 rgba(43,39,53,.45)}
+  @media (hover:hover){
+    button:hover{transform:translateY(-2px);box-shadow:0 5px 0 rgba(43,39,53,.82),0 12px 16px -8px rgba(70,45,20,.45)}
+    button:disabled:hover{transform:none;box-shadow:0 3px 0 rgba(43,39,53,.45)}
+  }
+  .go{background:linear-gradient(#ffe383,var(--yellow));font-family:var(--serif);font-weight:800;letter-spacing:.2px}
+  .fab{background:linear-gradient(#ffe383,var(--yellow))}
+  .tabs button.on,.toolbar button.on{background:linear-gradient(#ffe383,var(--yellow));box-shadow:0 3px 0 rgba(43,39,53,.82)}
+  .chip{border:1.5px solid rgba(43,39,53,.6);background:linear-gradient(#ffe383,var(--yellow));font-family:var(--serif);font-weight:700}
+  .stepnav{border-top:2px dashed rgba(43,39,53,.3)}
+
+  /* inputs: kagaz par dabi hui line */
+  input[type=number],input[type=text],select{
+    border:1.5px solid rgba(43,39,53,.26);background:#fffcf2;box-shadow:inset 0 2px 5px rgba(70,45,20,.12);
+    border-radius:10px;transition:border-color .25s,box-shadow .25s}
+  input[type=number]:focus,input[type=text]:focus,select:focus{outline:none;border-color:var(--blue);box-shadow:inset 0 2px 5px rgba(70,45,20,.1),0 0 0 4px rgba(134,205,234,.35)}
+  input[type=color]{border:1.5px solid rgba(43,39,53,.3);border-radius:10px}
+  .file{border:2px dashed rgba(43,39,53,.38);background:rgba(255,250,235,.7);transition:background .25s,transform .25s var(--ease)}
+  .file:hover{background:#fff3cf;transform:translateY(-1px)}
+  .file.has{border-style:solid}
+
+  /* tiles: chhote kaagaz ke tukde */
+  .tile{border:1.5px solid rgba(43,39,53,.28);border-radius:12px;background-color:var(--white);background-image:var(--grain);box-shadow:var(--soft);
+    transition:transform .28s var(--ease),box-shadow .28s var(--ease),background-color .25s}
+  .tile.sel{border-color:rgba(43,39,53,.8);box-shadow:var(--lift);transform:translateY(-3px) rotate(-.25deg);background-image:var(--grain)}
+  .tile.pv img,.tile.pv .ph{border-bottom:1px solid rgba(43,39,53,.2)}
+  .tile.pv.sel::after{border:1.5px solid rgba(43,39,53,.7)}
+
+  /* characters: polaroid photos */
+  .char{border:1px solid rgba(43,39,53,.14);border-radius:4px;background:#fffefb;padding:6px 6px 0;box-shadow:var(--soft);
+    transform:rotate(var(--r,0deg));transition:transform .3s var(--ease),box-shadow .3s var(--ease),background-color .25s}
+  .char:nth-child(3n+1){--r:-1.3deg} .char:nth-child(3n+2){--r:1deg} .char:nth-child(3n){--r:-.4deg}
+  .char img{border-bottom:0;border-radius:2px}
+  .char span{font-family:var(--serif);font-style:italic;font-weight:700;padding:8px 2px 9px}
+  .char.sel{background:var(--pink);transform:translateY(-4px) rotate(0);box-shadow:var(--lift)}
+  .char .tick,.char .del{border:1.5px solid rgba(43,39,53,.7)}
+  .skel{border:1px solid rgba(43,39,53,.12);border-radius:4px}
+  details.creator{border:1.5px solid rgba(43,39,53,.22);background:rgba(255,248,230,.7)}
+  details.creator[open] summary{border-bottom:1.5px dashed rgba(43,39,53,.3)}
+  .checks label{border:1.5px solid rgba(43,39,53,.3);background-color:var(--white);box-shadow:var(--soft);transition:transform .25s var(--ease),background-color .25s}
+  .checks label.on{box-shadow:var(--lift);transform:translateY(-2px)}
+  .battle{border:1.5px solid rgba(43,39,53,.25);background:#fff1ee}
+  .trow{border:1.5px solid rgba(43,39,53,.22);box-shadow:var(--soft)}
+
+  /* library / output */
+  .lrow{border:1.5px solid rgba(43,39,53,.22);background:var(--white);box-shadow:var(--soft);transition:transform .25s var(--ease),background-color .25s}
+  .lrow.sel,.lcell.sel{background:var(--green)}
+  .lcell{border:1.5px solid rgba(43,39,53,.2);box-shadow:var(--soft);background:var(--white)}
+  .lcell img{border-bottom:1px solid rgba(43,39,53,.2)}
+  .lpl{border-top:2px dashed rgba(43,39,53,.3)}
+  .wf{border:1.5px solid rgba(43,39,53,.3)}
+  .bar{border:1.5px solid rgba(43,39,53,.6);box-shadow:inset 0 2px 4px rgba(70,45,20,.18)}
+  .bar i{border-right:1.5px solid rgba(43,39,53,.7);transition:width .6s var(--ease)}
+  #result video{border:6px solid #fffefb;border-radius:6px;box-shadow:var(--lift);transform:rotate(-.6deg)}
+
+  /* saved gallery: polaroid */
+  .scell{border:5px solid #fffefb;border-bottom-width:5px;border-radius:4px;box-shadow:var(--soft);
+    transition:transform .3s var(--ease),box-shadow .3s var(--ease);transform:rotate(var(--r,0deg))}
+  .scell:nth-child(3n+1){--r:-1deg} .scell:nth-child(3n+2){--r:.8deg} .scell:nth-child(3n){--r:-.3deg}
+  @media (hover:hover){ .scell:hover{transform:translateY(-4px) rotate(0);box-shadow:var(--lift)} }
+
+  /* navigation: index tabs */
+  .nav{background:var(--white) var(--grain);border-top:1px solid rgba(43,39,53,.2);box-shadow:0 -10px 22px -12px rgba(70,45,20,.45)}
+  .nav a{border-right:1px solid rgba(43,39,53,.1);transition:background .3s,transform .3s var(--ease)}
+  .nav a.on{background:linear-gradient(#fbe38f,var(--yellow))}
+  .nav a.on::before{height:4px;left:24%;right:24%;border-radius:0 0 5px 5px}
+  @media (min-width:960px){
+    .top{background:none;box-shadow:none}
+    .nav{background:none;border:0;box-shadow:none}
+    .top::after{display:none}
+    .nav a{border:1.5px solid rgba(43,39,53,.3);border-radius:12px;background:var(--white) var(--grain);box-shadow:var(--soft)}
+    .nav a:hover{transform:translateX(4px)}
+    .nav a.on{background:linear-gradient(#fbe38f,var(--yellow));transform:translateX(8px);box-shadow:var(--lift)}
+  }
+
+  /* viewer + sheet */
+  .vclose,.vnav,.fside button{border:1.5px solid rgba(255,255,255,.85);background:rgba(30,26,40,.55);color:#fff;box-shadow:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .vclose:hover,.vnav:hover,.fside button:hover{background:rgba(30,26,40,.8);box-shadow:none}
+  .mbox{background:var(--paper) var(--grain);border:1px solid rgba(43,39,53,.25);border-bottom:0;border-radius:22px 22px 0 0;box-shadow:0 -14px 30px -12px rgba(0,0,0,.5)}
+  .mbox::before{content:"";display:block;width:46px;height:5px;border-radius:5px;background:rgba(43,39,53,.22);margin:-6px auto 12px}
+  .msheet.on .mbox{animation:sheetUp .38s var(--ease)}
+  .msheet{transition:background .3s}
+  @keyframes sheetUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+  .mname{font-family:var(--serif);font-size:17px}
+
+  /* ---------- 2D stick-man (naya) ---------- */
+  .box2d{border:1.5px solid rgba(43,39,53,.25);border-radius:14px;background:#eef8ff;padding:14px;margin-top:14px}
+  .box2d h3{margin:0 0 4px;font-size:16px}
+  .note2d{display:none;font-weight:800}
+  .card.is2d .note2d{display:block}
+  .card.is2d > *:not(h2):not(.note2d):not(.stepnav){opacity:.45;pointer-events:none;filter:grayscale(.6)}
+  #teamsWrap{background:#f4f0ff}
+
+  /* ---------- 3D Horror Game ---------- */
+  .card.c8 .num{background:var(--red);color:#fff}
+  .card.c8::before{background:var(--red);transform:rotate(-2deg)}
+  body.ingame .fab,body.ingame .sidego{display:none!important}   /* game tab me "Video banao" (dance) button na dikhe */
+  #g_prog{display:none;margin-top:18px}
+  @media (max-width:959px){            /* 9 tabs phone me fit nahi hote, isliye nav side-scroll */
+    .nav{grid-auto-columns:minmax(64px,1fr);overflow-x:auto;scrollbar-width:none}
+    .nav::-webkit-scrollbar{display:none}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="side">
+    <header class="top">
+      <div class="logo">
+        <div class="badge">🕺</div>
+        <div>
+          <h1>Dance <em>Shorts</em> Studio</h1>
+          <div class="tag">Song ki beat par 3D characters ya 2D stick-man ka dance / fight video</div>
+        </div>
+      </div>
+      <div class="pill wait" id="status" role="status" aria-live="polite"><span class="dot"></span><span id="statusTxt">Connect ho raha hai...</span><button id="retry" style="display:none">Retry</button></div>
+    </header>
+
+    <nav class="nav" id="nav" aria-label="Sections">
+      <a href="#sec-chars" data-t="sec-chars"><span class="ic">🧍</span><span>Character</span></a>
+      <a href="#sec-mode" data-t="sec-mode"><span class="ic">💃</span><span>Mode</span></a>
+      <a href="#sec-stage" data-t="sec-stage"><span class="ic">🎪</span><span>Stage</span></a>
+      <a href="#sec-cam" data-t="sec-cam"><span class="ic">🎥</span><span>Camera</span></a>
+      <a href="#sec-lib" data-t="sec-lib"><span class="ic">📚</span><span>Library</span></a>
+      <a href="#sec-audio" data-t="sec-audio"><span class="ic">🎵</span><span>Audio</span></a>
+      <a href="#sec-game" data-t="sec-game"><span class="ic">🎮</span><span>Game</span></a>
+      <a href="#sec-saved" data-t="sec-saved"><span class="ic">💾</span><span>Saved</span></a>
+      <a href="#outPanel" data-t="outPanel" id="navOut" hidden><span class="ic">🎬</span><span>Output</span></a>
+    </nav>
+    <button class="go sidego" id="goSide">🚀 Video banao</button>
+  </div>
+
+  <main>
+  <!-- 1 : characters -->
+  <section class="card" id="sec-chars">
+    <h2><span class="num">1</span> Character chuno</h2>
+    <p class="hint">Ek ya zyada (max 8) chun sakte ho. Kuch nahi chuna to random aayega. Apna custom character bhi bana sakte ho.</p>
+    <div class="toolbar">
+      <span class="chip" id="selCount">0 chune</span>
+      <button id="randPick">🎲 Random 3 chuno</button>
+      <button id="clearPick">Saaf karo</button>
+    </div>
+    <div class="toolbar">
+      <select id="newN" title="kitne naye random characters" aria-label="Kitne naye random characters">
+        <option>1</option><option selected>3</option><option>4</option><option>6</option><option>8</option>
+      </select>
+      <button id="makeRand">✨ Naye random characters banao</button>
+    </div>
+    <div class="grid" id="chars">
+      <div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div><div class="skel"></div>
+    </div>
+
+    <details class="creator" id="creator">
+      <summary>🧪 Apna custom character banao</summary>
+      <div class="cbody">
+        <label class="l" style="margin-top:0" for="cName">Naam</label>
+        <input type="text" id="cName" value="Mera Dancer" maxlength="24">
+
+        <label class="l">Rang</label>
+        <div class="colors">
+          <div><label for="cSkin">Skin</label><input type="color" id="cSkin" value="#f2c9a0"></div>
+          <div><label for="cTop">Top</label><input type="color" id="cTop" value="#ff4fa0"></div>
+          <div><label for="cPant">Pant</label><input type="color" id="cPant" value="#3050ff"></div>
+          <div><label for="cShoe">Shoes</label><input type="color" id="cShoe" value="#ffffff"></div>
+          <div><label for="cAcc">Accessory</label><input type="color" id="cAcc" value="#ffe14a"></div>
+        </div>
+
+        <label class="l">Body size</label>
+        <div class="sliders" id="cSliders"></div>
+
+        <label class="l">Accessories <small>(jitne chaho)</small></label>
+        <div class="checks" id="cAccs"></div>
+
+        <label class="l">Dance moves <small>(kam se kam ek, warna default chalega)</small></label>
+        <div class="checks" id="cMoves"></div>
+
+        <div style="margin-top:16px"><button id="cMake" class="go" style="background:var(--green);font-size:15px;padding:11px 20px">✅ Character save karo</button></div>
+        <div id="cMsg" class="hint" style="margin:8px 0 0" role="status"></div>
+      </div>
+    </details>
+  </section>
+
+  <!-- 2 : mode + dance -->
+  <section class="card c2" id="sec-mode">
+    <h2><span class="num">2</span> Mode, dance aur speed</h2>
+
+    <div id="styleWrap">
+      <label class="l" style="margin-top:10px">Video ka style</label>
+      <div class="tiles y" id="styleTiles"></div>
+    </div>
+
+    <div id="mode3dWrap">
+      <label class="l" style="margin-top:10px">Video ka mode</label>
+      <div class="tiles r" id="modeTiles"></div>
+    </div>
+
+    <div class="box2d" id="box2d" style="display:none">
+      <h3>✏️ 2D Stick-man settings</h3>
+      <p class="hint" style="margin-bottom:10px">Haath se bane stick-man dance / jhagra / Badshah video. Characters ki ginti aur type neeche se chuno (sab stick-man hi bante hain). Background, stage, lights, camera aur kapde sirf 3D ke liye hain.</p>
+
+      <label class="l" style="margin-top:6px">2D mode</label>
+      <div class="tiles r" id="mode2dTiles"></div>
+      <p class="hint" style="margin:8px 0 0">VS mode me Auto teams par 1 fighter baaki sabhi ke khilaaf ladega. Woh opponents ko ek-ek karke haraayega; aakhri opponent ke baad 3 second ka attitude/funk pose aayega. Manual teams chuno to apni teams bana sakte ho.</p>
+
+      <label class="l">Drawing theme</label>
+      <div class="tiles p" id="theme2dTiles"></div>
+
+      <div class="row">
+        <div>
+          <label class="l" for="texts2d">Beat par aane wale words <small>(comma se alag)</small></label>
+          <input type="text" id="texts2d" maxlength="200" placeholder="FUNK,ATTITUDE,SUCCESS" autocapitalize="characters" autocorrect="off">
+        </div>
+        <div>
+          <label class="l" for="crowd2d">Bheed ki ginti</label>
+          <select id="crowd2d">
+            <option value="0">Auto</option>
+            <option>10</option><option>20</option><option>30</option><option>50</option><option>80</option>
+          </select>
+        </div>
+      </div>
+      <p class="hint" style="margin:8px 0 0">Words tabhi dikhenge jab neeche "Video par text" ON ho. Bheed sirf tab dikhti hai jab "Public" ON ho.</p>
+
+      <label class="l">🧍 Kitne stick-man character <small>(Auto = jitne upar chune)</small></label>
+      <select id="n2d">
+        <option value="0">Auto (chune hue ke hisaab se)</option>
+        <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option>
+      </select>
+      <div id="chars2dBox" style="margin-top:10px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px"></div>
+      <p class="hint" style="margin:6px 0 0">Har character ka type chuno (Badshah, Ninja, Ladki, Pehelwan...) ya Random chodo. Dance style har ek ke alag random aate hain.</p>
+
+      <div class="row" style="margin-top:6px">
+        <div>
+          <label class="l" for="public2d">👥 Public (bheed) dekh rahi ho?</label>
+          <select id="public2d">
+            <option value="auto">Auto (mode ke hisaab se)</option>
+            <option value="1">Haan - bheed dikhao</option>
+            <option value="0">Nahi - koi bheed nahi</option>
+          </select>
+        </div>
+        <div>
+          <label class="l" for="blur2d">🌫️ Motion blur</label>
+          <select id="blur2d">
+            <option value="0">No blur (sharp)</option>
+            <option value="1">Blur (normal)</option>
+            <option value="2">Blur (strong)</option>
+          </select>
+        </div>
+      </div>
+      <p class="hint" style="margin:6px 0 0">Blur lagane par video banne me zyada time lagta hai (normal ~4x, strong ~6x).</p>
+
+      <label class="l">🖼️ Custom background <small>(image ya video / 3D render ki video - optional)</small></label>
+      <input type="file" id="bg2d" accept="image/*,video/*">
+      <p class="hint" style="margin:6px 0 0">Kuch nahi chuna to upar wali theme ka background chalega. "3D Stage Room" theme me 3D jaisa kamra banta hai, "Paper Flipbook" me page palatte hain aur page number likha hota hai.</p>
+
+      <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:13px;font-weight:700"><input type="checkbox" id="text2d"> Video par text dikhao (ATTITUDE, K.O., naam waghera) - default band</label>
+    </div>
+
+    <div class="battle" id="battleSub" style="display:none">
+      <h3>⚔️ Fight settings</h3>
+      <p class="hint" style="margin-bottom:10px">Kam se kam 2 dancers chahiye (kam hue to apne aap add honge). 3D VS me dono teams daudkar aati hain. 2D VS Auto me ek fighter baaki sabhi se ek-ek karke ladega. Talwar / sword / axe se sequential head/hand cuts dikh sakte hain; aakhri opponent ke girne ke baad 3 second attitude/funk pose aayega.</p>
+
+      <label class="l" style="margin-top:6px">Hathiyaar (weapon)</label>
+      <div class="tiles o" id="weaponTiles"></div>
+
+    </div>
+
+    <div class="battle" id="teamsWrap" style="display:none">
+      <h3>👥 Teams</h3>
+      <label class="l" style="margin-top:6px">Teams kaise banein?</label>
+      <div class="tiles" id="teamModeTiles"></div>
+      <div id="teamBox" style="margin-top:12px;display:none"></div>
+
+      <label class="l">Team ke naam <small>(English letters / numbers)</small></label>
+      <div class="names">
+        <div class="a"><label class="l" for="teamA" style="margin-top:0">Team A</label><input type="text" id="teamA" value="TEAM RED" maxlength="14" autocapitalize="characters" autocorrect="off"></div>
+        <div class="b"><label class="l" for="teamB" style="margin-top:0">Team B</label><input type="text" id="teamB" value="TEAM BLUE" maxlength="14" autocapitalize="characters" autocorrect="off"></div>
+      </div>
+      <p class="hint" style="margin:8px 0 0">Ye naam tab dikhte hain jab kisi team me 2 ya zyada dancers hon. 1v1 me character ka naam dikhta hai.</p>
+    </div>
+
+    <div id="danceOnly">
+      <label class="l">Sab kaise nachenge?</label>
+      <div class="tiles p" id="syncTiles">
+        <div class="tile sel" data-v="mirror">Mirror<small>Seedha-ulta jodi</small></div>
+        <div class="tile" data-v="unison">Unison<small>Sab ek jaisa</small></div>
+        <div class="tile" data-v="canon">Canon<small>Ek ke baad ek</small></div>
+        <div class="tile" data-v="free">Free<small>Sabka apna</small></div>
+      </div>
+    </div>
+
+    <label class="l">Dance speed mode</label>
+    <div class="tiles p" id="speedTiles"></div>
+
+    <div class="row">
+      <div>
+        <label class="l">Dance speed <small>(multiplier)</small></label>
+        <input type="range" id="danceSpeed" min="0.4" max="2.5" step="0.1" value="1">
+        <div class="rv"><span>0.4x</span><b id="danceSpeedV">1.0x</b><span>2.5x</span></div>
+      </div>
+      <div>
+        <label class="l" for="count">Kitne dancers?</label>
+        <select id="count">
+          <option value="0">Auto (jitne chune)</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option>
+          <option>5</option><option>6</option><option>7</option><option>8</option>
+        </select>
+      </div>
+      <div>
+        <label class="l" for="newRandom">Naye random characters add karo</label>
+        <select id="newRandom">
+          <option value="0">Nahi</option>
+          <option>1</option><option>2</option><option>3</option><option>4</option>
+          <option>5</option><option>6</option><option>7</option><option>8</option>
+        </select>
+      </div>
+    </div>
+    <p class="hint" style="margin-top:8px">Total dancers 8 se zyada nahi honge.</p>
+
+    <div id="clothWrap">
+    <label class="l">Kapde (cloth)</label>
+    <div class="tiles y" id="clothTiles">
+      <div class="tile sel" data-v="none">Original<small>Kapde na badlo</small></div>
+      <div class="tile" data-v="upload">Image se<small>Photo ke rang lo</small></div>
+      <div class="tile" data-v="random">Random<small>Naye rang</small></div>
+    </div>
+    <div class="sub" id="clothSub">
+      <label class="file" for="clothimg"><span class="ic">👕</span><span><b id="clothName">Kapde ki image chuno</b><small>JPG / PNG, max 15MB - uske rang kapdon par lagenge</small></span></label>
+      <input type="file" id="clothimg" accept="image/*" style="display:none">
+    </div>
+    <div class="sub" id="clothTarget">
+      <label class="l" for="clothTargetIn">Kis par lagana hai?</label>
+      <input type="text" id="clothTargetIn" value="all" placeholder="all  ya  1,3  ya  robot,cat" autocapitalize="off" autocorrect="off">
+      <p class="hint" style="margin:6px 0 0">"all" = sab par. Ya dancer number (1,3) ya character id (robot,cat).</p>
+    </div>
+    </div>
+  </section>
+
+  <!-- 3 : stage + background -->
+  <section class="card c3" id="sec-stage">
+    <h2><span class="num">3</span> Background, stage aur lights</h2>
+    <p class="hint note2d">✏️ 2D style me ye section kaam nahi karta (sirf 3D video ke liye).</p>
+
+    <label class="l" style="margin-top:6px">Background</label>
+    <div class="tiles pvs g" id="bgTiles"></div>
+    <div class="sub" id="bgFileWrap">
+      <div class="toolbar" style="margin-top:0">
+        <span class="chip" id="bgLibSum" style="flex:1 1 160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Library se kuch nahi chuna</span>
+        <button type="button" class="openlib" data-k="bg">📚 Library kholo</button>
+      </div>
+      <label class="l">Ya apni image upload karo</label>
+      <label class="file" for="bgimg"><span class="ic">🖼️</span><span><b id="bgName">Apni background image chuno</b><small>JPG / PNG, max 15MB</small></span></label>
+      <input type="file" id="bgimg" accept="image/*" style="display:none">
+    </div>
+
+    <label class="l">Stage / floor</label>
+    <div class="tiles pvs" id="stageTiles"></div>
+    <div class="sub" id="stageFileWrap">
+      <div class="toolbar" style="margin-top:0">
+        <span class="chip" id="stageLibSum" style="flex:1 1 160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Library se kuch nahi chuna</span>
+        <button type="button" class="openlib" data-k="stage">📚 Library kholo</button>
+      </div>
+      <label class="l">Ya apni floor image upload karo</label>
+      <label class="file" for="stageimg"><span class="ic">🟫</span><span><b id="stageName">Floor image chuno</b><small>JPG / PNG, max 15MB - floor par tile hoti hai</small></span></label>
+      <input type="file" id="stageimg" accept="image/*" style="display:none">
+      <label class="l">Image kitne meter me ek baar phaile</label>
+      <input type="range" id="stageScale" min="2" max="40" step="1" value="8">
+      <div class="rv"><span>2 (chhota)</span><b id="stageScaleV">8</b><span>40 (bada)</span></div>
+    </div>
+
+    <label class="l">Lights <small>(tick / untick, ya random)</small></label>
+    <div class="tiles pvs o" id="lightTiles"></div>
+  </section>
+
+  <!-- 4 : camera + rotation -->
+  <section class="card c4" id="sec-cam">
+    <h2><span class="num">4</span> Camera aur rotation</h2>
+    <p class="hint note2d">✏️ 2D style me ye section kaam nahi karta (sirf 3D video ke liye).</p>
+
+    <label class="l" style="margin-top:6px">Camera effects <small>(tick / untick, ya random)</small></label>
+    <div class="tiles" id="camTiles"></div>
+
+    <label class="l">Rotation <small>(kuch bhi na chuno to koi rotation nahi)</small></label>
+    <div class="tiles g" id="rotTiles"></div>
+
+    <div style="max-width:420px">
+      <label class="l">Rotation / camera sweep speed</label>
+      <input type="range" id="rotSpeed" min="0.2" max="4" step="0.1" value="1">
+      <div class="rv"><span>0.2x</span><b id="rotSpeedV">1.0x</b><span>4x</span></div>
+    </div>
+  </section>
+
+  <!-- library -->
+  <section class="card c7" id="sec-lib">
+    <h2><span class="num">📚</span> Library</h2>
+    <p class="hint">Har tab ka apna search, ♥ aur folder filter hai. Neeche scroll karoge to aur items apne aap load honge. Gaane par tap karo - wahin player khulega, waveform se hissa (trim) chuno.</p>
+    <div class="tabs" id="libTabs">
+      <button type="button" data-k="music" class="on">🎵 Music</button>
+      <button type="button" data-k="bg">🖼️ Background</button>
+      <button type="button" data-k="stage">🟫 Stage</button>
+      <button type="button" data-k="clips">✂ Clips</button>
+    </div>
+    <div id="libPanels"></div>
+  </section>
+
+  <!-- 5 : audio -->
+  <section class="card c5" id="sec-audio">
+    <h2><span class="num">5</span> Audio aur settings</h2>
+    <label class="l" style="margin-top:6px">Gaana kahan se?</label>
+    <div class="tiles" id="musicSrcTiles">
+      <div class="tile sel" data-v="lib">Library<small>music/ + Hugging Face</small></div>
+      <div class="tile" data-v="upload">Upload<small>Apna gaana</small></div>
+    </div>
+    <div class="sub" id="musicLibWrap">
+      <div class="toolbar">
+        <span class="chip" id="musicSum" style="flex:1 1 180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Koi gaana nahi chuna</span>
+        <button type="button" class="openlib" data-k="music">📚 Library kholo</button>
+      </div>
+    </div>
+    <div class="sub" id="musicUpWrap">
+      <label class="file" for="audio" id="audBox"><span class="ic">🎵</span><span><b id="audName">Song / funk audio chuno</b><small>mp3, wav, m4a, ogg, flac - max 40MB</small></span></label>
+      <input type="file" id="audio" accept="audio/*,.mp3,.wav,.m4a,.ogg,.flac" style="display:none">
+    </div>
+
+    <div class="row">
+      <div><label class="l" for="start">Start (sec)</label><input type="number" id="start" value="0" min="0" inputmode="decimal"><label style="display:flex;gap:8px;align-items:center;margin-top:8px;font-size:13px;font-weight:700"><input type="checkbox" id="startRnd"> Gaane me random jagah se</label></div>
+      <div><label class="l" for="duration">Duration (5-60 sec)</label><input type="number" id="duration" value="20" min="5" max="60" inputmode="decimal"></div>
+      <div><label class="l" for="res">Resolution</label>
+        <select id="res">
+          <optgroup label="Vertical (Shorts / Reels)">
+            <option value="540x960">540x960 (fast)</option>
+            <option value="720x1280">720x1280</option>
+            <option value="1080x1920">1080x1920 (slow)</option>
+          </optgroup>
+          <optgroup label="Horizontal (YouTube)">
+            <option value="960x540">960x540 (fast)</option>
+            <option value="1280x720">1280x720</option>
+            <option value="1920x1080">1920x1080 (slow)</option>
+          </optgroup>
+        </select></div>
+      <div><label class="l" for="fps">FPS</label>
+        <select id="fps"><option>24</option><option selected>30</option><option>48</option><option>60</option><option>90</option><option>120</option></select></div>
+      <div><label class="l" for="seed">Seed (naya look)</label>
+        <div class="seedbox"><input type="number" id="seed" value="7" inputmode="numeric"><button id="dice" title="random seed" aria-label="Random seed">🎲</button></div></div>
+    </div>
+
+    <div style="margin-top:20px"><button class="go" id="go">🚀 Video banao</button></div>
+  </section>
+
+  <!-- 6 : output -->
+  <section class="card c6" id="outPanel" style="display:none">
+    <h2><span class="num">6</span> Output</h2>
+    <div class="bar"><i id="barfill"></i></div>
+    <div id="msg" role="status" aria-live="polite"></div>
+    <div id="err" role="alert"></div>
+    <div id="result"></div>
+  </section>
+
+  <!-- GAME : 3D Horror Escape Mission -->
+  <section class="card c8" id="sec-game">
+    <h2><span class="num">🎮</span> 3D Horror Escape Game</h2>
+    <p class="hint">Poora game-type gameplay video: player har room se ek cheez collect karta hai, killer peeche padta hai (shoot / bhaagna / pakda jaana), aakhir me Secret Room ke altar ko saari cheezein feed karke darwaza khulta hai aur 10 second ka escape animation chalta hai. Gaana chunne ki zaroorat nahi - music, heartbeat, saans ("ha / hu"), shoot sab awaaz khud ban jaati hai.</p>
+    <div class="hint" id="gameNote" style="display:none;font-weight:800;color:#c0173f"></div>
+
+    <div id="gameBody">
+      <label class="l" style="margin-top:6px">Player <small>(Random = apne aap)</small></label>
+      <div class="tiles pvs" id="gPlayer"></div>
+
+      <label class="l">Killer / Ghost <small>(ek ya zyada chuno, har room me inme se random aayega)</small></label>
+      <div class="tiles pvs r" id="gKillers"></div>
+
+      <label class="l">Mahal ka type</label>
+      <div class="tiles g" id="gMansion"></div>
+
+      <label class="l">Rooms <small>(kuch chuna to wahi rooms aayenge, warna neeche ki ginti ke random rooms)</small></label>
+      <div class="tiles" id="gRooms"></div>
+
+      <div class="row">
+        <div><label class="l" for="g_rooms">Kitne rooms (1-8)</label>
+          <select id="g_rooms"><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>8</option></select></div>
+        <div><label class="l" for="g_lives">Lives</label>
+          <select id="g_lives"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+        <div><label class="l" for="g_dur">Duration (30-180 sec)</label>
+          <input type="number" id="g_dur" value="60" min="30" max="180" inputmode="decimal"></div>
+      </div>
+      <p class="hint" style="margin:6px 0 0">Rooms zyada hon to video apne aap lamba ho jaata hai (har room ke liye kam se kam ~9 sec).</p>
+
+      <label class="l">Escape (aakhri 10 second ka animation)</label>
+      <div class="tiles o" id="gEscape"></div>
+
+      <label class="l">Shoot aur hathiyaar</label>
+      <label style="display:flex;gap:8px;align-items:center;font-size:13px;font-weight:700"><input type="checkbox" id="g_shoot" checked> Shoot ON (killer ko goli maar sakta hai)</label>
+      <div class="tiles o" id="gWeapon" style="margin-top:10px"></div>
+
+      <label class="l">Player OUT hona <small>(Out = saari lives khatam, game over; iske liye rooms >= lives chahiye)</small></label>
+      <div class="tiles p" id="gOut"></div>
+
+      <div class="row">
+        <div><label class="l" for="g_res">Resolution</label>
+          <select id="g_res">
+            <optgroup label="Vertical"><option value="540x960">540x960 (fast)</option><option value="720x1280">720x1280</option><option value="1080x1920">1080x1920 (slow)</option></optgroup>
+            <optgroup label="Horizontal"><option value="960x540">960x540 (fast)</option><option value="1280x720">1280x720</option><option value="1920x1080">1920x1080 (slow)</option></optgroup>
+          </select></div>
+        <div><label class="l" for="g_fps">FPS</label>
+          <select id="g_fps"><option>24</option><option selected>30</option><option>48</option><option>60</option></select></div>
+        <div><label class="l" for="g_seed">Seed</label>
+          <div class="seedbox"><input type="number" id="g_seed" value="" placeholder="auto" inputmode="numeric"><button id="g_dice" type="button" aria-label="Random seed">🎲</button></div></div>
+      </div>
+
+      <label style="display:flex;gap:8px;align-items:center;margin-top:14px;font-size:13px;font-weight:700"><input type="checkbox" id="g_sound" checked> Awaaz / music ON</label>
+      <div style="max-width:420px">
+        <label class="l">Volume</label>
+        <input type="range" id="g_vol" min="0.1" max="1.5" step="0.1" value="1">
+        <div class="rv"><span>0.1x</span><b id="g_volV">1.0x</b><span>1.5x</span></div>
+      </div>
+      <p class="hint" style="margin-top:10px">Ye video heavy 3D render hota hai, isliye pehle 540x960 / 30 FPS me test karo.</p>
+
+      <div style="margin-top:16px"><button class="go" id="g_go" type="button">🎮 Game video banao</button></div>
+
+      <div id="g_prog">
+        <div class="bar"><i id="g_bar"></i></div>
+        <div id="g_msg" style="margin-top:10px;font-weight:700;font-size:14px;min-height:20px" role="status" aria-live="polite"></div>
+        <div id="g_err" style="margin-top:8px;font-weight:800;color:#c0173f" role="alert"></div>
+        <div id="g_result" style="margin-top:14px;text-align:center"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card c6" id="sec-saved">
+    <h2><span class="num">💾</span> Saved videos</h2>
+    <p class="hint">Gallery ki tarah touch se scroll karo. Kisi video par tap karo to full screen khulega - wahan upar-neeche swipe karke saare videos dekho. 🎵 dabao to pata chalega ki kaunsa gaana / hissa laga tha, aur wahin se library me khol sakte ho. Videos is browser me save rehte hain, browser data clear karoge to ye bhi jayenge.</p>
+    <div class="toolbar"><span class="chip" id="savedCount">0 video</span><button type="button" id="savedClear" style="background:var(--red);color:#fff">🗑 Sab clear karo</button></div>
+    <div class="sgrid" id="savedList"></div>
+  </section>
+
+  <footer>Tip: 1080p ya 60+ FPS me render dheere hota hai. Pehle 540x960 me test karo.</footer>
+  </main>
+</div>
+
+<button class="fab" id="fab">🚀 Video banao</button>
+
+<div id="viewer" role="dialog" aria-modal="true" aria-label="Saved videos full screen">
+  <button type="button" class="vclose" id="vclose" aria-label="Band karo">✕</button>
+  <div class="vcount" id="vcount"></div>
+  <div class="vfeed" id="vfeed"></div>
+  <button type="button" class="vnav up" id="vup" aria-label="Pichla video">▲</button>
+  <button type="button" class="vnav dn" id="vdn" aria-label="Agla video">▼</button>
+  <div class="msheet" id="msheet"><div class="mbox" id="mbox"></div></div>
+</div>
+
+<script>
+/* ================= BACKEND URL (yahin change karna) ================= */
+const API = "https://maksudanyadav814-story-writer-ai.hf.space";
+/* ==================================================================== */
+
+const $ = id => document.getElementById(id);
+const MAX = 8;
+const BG_LABEL = {random:"Random", custom:"Meri image", city:"City", synth:"Synthwave", space:"Space", stage:"Stage",
+                  aurora:"Aurora", sunset:"Sunset", bokeh:"Bokeh", led:"LED Wall"};
+const MOVE_LABEL = ["Groove","Disco","Jump","Punch","Twist","High knees","Body wave","Running man","Spin","Bhangra"];
+const ACC_LABEL = {ears_cat:"Cat ears", ears_bunny:"Bunny ears", ears_bear:"Bear ears", horns:"Horns", antenna:"Antenna",
+                   hat_top:"Top hat", hat_cap:"Cap", crown:"Crown", halo:"Halo", glasses:"Glasses", cape:"Cape",
+                   tail:"Tail", mustache:"Mustache", wings:"Wings"};
+const WEAPON_LABEL = {talwar:"Talwar", sword:"Sword", axe:"Axe", staff:"Staff", hammer:"Hammer", fists:"Fists", mixed:"Mixed", random:"Random"};
+const ICON = {random:"🎲", custom:"🖼️"};
+const STYLE_SUB = {"3d":"3D characters, camera, stage", "2d":"Haath se bane stick-man"};
+const MODE2D_SUB = {dance:"Funk dance, 31 styles", vs:"Team vs team jhagra", badshah:"Bheed ke beech Badshah", story:"Dance → Fight → Badshah"};
+const THEME2D_SUB = {chalk:"Kaala board, chalk", paper:"Flipbook: page palatte, page number", room3d:"3D stage room", neon:"Dark + glow", comic:"Peela comic"};
+
+let CHARS = [];
+let picked = [];
+const teamOf = {};                    // char id -> 0 (A) / 1 (B)
+const state = {sync:"mirror", bg:"random", stage:"disco", speed:"beat", cloth:"none", battle:"off", weapon:"talwar", teamMode:"auto", msrc:"", style:"3d", mode2d:"story", theme2d:"chalk"};
+const LIB = {music:[]};
+const multi = {
+  lights:    {set:new Set(["spot"]), rnd:false},
+  cam_fx:    {set:new Set(["cuts","sweep","zoom","shake"]), rnd:false},
+  rotations: {set:new Set(), rnd:false}
+};
+const hooks = {};
+
+function el(tag, cls, html){ const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+/* ---------- connection ---------- */
+function setStatus(cls, txt, showRetry){
+  $("status").className = "pill " + cls;
+  $("statusTxt").textContent = txt;
+  $("retry").style.display = showRetry ? "inline-block" : "none";
+}
+async function fetchJSON(path, tries = 1){
+  let last;
+  for (let i = 0; i < tries; i++){
+    try{
+      const r = await fetch(API + path);
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return await r.json();
+    }catch(e){ last = e; if (i < tries - 1) await new Promise(r => setTimeout(r, 4000)); }
+  }
+  throw last;
+}
+async function connect(){
+  setStatus("wait", "Connect ho raha hai... (Space soya ho to 30-60 sec)", false);
+  try{
+    const o = await fetchJSON("/api/options", 8);
+    buildAll(o); loadGame();
+    setStatus("ok", "Connected - " + o.characters.length + " characters", false);
+  }catch(e){
+    setStatus("bad", "Connect nahi hua", true);
+  }
+}
+$("retry").onclick = connect;
+
+/* ---------- generic tile builders ---------- */
+function setA11y(t, role){ t.tabIndex = 0; t.setAttribute("role", role || "button"); }
+function previewTile(it){
+  const t = el("div", "tile pv" + (it.rnd ? " rnd" : ""));
+  t.dataset.v = it.id; setA11y(t);
+  if (it.preview){
+    const img = el("img");
+    img.loading = "lazy"; img.alt = it.name; img.src = API + it.preview;
+    img.onerror = () => { const ph = el("div", "ph", ICON[it.id] || "✨"); img.replaceWith(ph); };
+    t.appendChild(img);
+  } else {
+    t.appendChild(el("div", "ph", ICON[it.id] || "✨"));
+  }
+  t.appendChild(el("span", "", esc(it.name)));
+  return t;
+}
+function plainTile(it){
+  const t = el("div", "tile" + (it.rnd ? " rnd" : ""), esc(it.name) + (it.sub ? `<small>${esc(it.sub)}</small>` : ""));
+  t.dataset.v = it.id; setA11y(t);
+  return t;
+}
+function markSel(box){
+  box.querySelectorAll(".tile").forEach(t => t.setAttribute("aria-pressed", t.classList.contains("sel")));
+}
+/* single select */
+function buildSingle(boxId, items, key, withPreview){
+  const box = $(boxId);
+  box.innerHTML = "";
+  items.forEach(it => {
+    const t = withPreview ? previewTile(it) : plainTile(it);
+    if (state[key] === it.id) t.classList.add("sel");
+    box.appendChild(t);
+  });
+  markSel(box);
+  box.onclick = e => {
+    const t = e.target.closest(".tile"); if (!t) return;
+    state[key] = t.dataset.v;
+    box.querySelectorAll(".tile").forEach(x => x.classList.toggle("sel", x === t));
+    markSel(box);
+    if (key === "bg") $("bgFileWrap").style.display = state.bg === "custom" ? "block" : "none";
+    if (key === "stage") $("stageFileWrap").style.display = state.stage === "custom" ? "block" : "none";
+    if (hooks[key]) hooks[key]();
+  };
+}
+/* multi select + random */
+function buildMulti(boxId, items, key, withPreview){
+  const box = $(boxId), m = multi[key];
+  box.innerHTML = "";
+  const all = [...items, {id:"__random", name:"Random", sub:"Apne aap chuno", rnd:true}];
+  const paint = () => { box.querySelectorAll(".tile").forEach(t => {
+    t.classList.toggle("sel", t.dataset.v === "__random" ? m.rnd : (!m.rnd && m.set.has(t.dataset.v)));
+  }); markSel(box); };
+  all.forEach(it => box.appendChild(withPreview ? previewTile(it) : plainTile(it)));
+  box.onclick = e => {
+    const t = e.target.closest(".tile"); if (!t) return;
+    const v = t.dataset.v;
+    if (v === "__random"){ m.rnd = !m.rnd; if (m.rnd) m.set.clear(); }
+    else { m.rnd = false; m.set.has(v) ? m.set.delete(v) : m.set.add(v); }
+    paint();
+  };
+  paint();
+}
+function multiVal(key){
+  const m = multi[key];
+  if (m.rnd) return "random";
+  return m.set.size ? [...m.set].join(",") : "none";
+}
+
+/* ---------- build everything from /api/options ---------- */
+let OPT = null;
+function wname(w){
+  const n = w.name;
+  const s = typeof n === "string" ? n : (n && (n.name || n.label)) || "";
+  return s || WEAPON_LABEL[w.id] || (w.id.charAt(0).toUpperCase() + w.id.slice(1));
+}
+function buildAll(o){
+  OPT = o;
+  buildChars(o.characters);
+  buildSingle("speedTiles",
+    [...o.speed_modes, {id:"random", name:"Random", rnd:true}], "speed", false);
+  buildSingle("bgTiles",
+    [{id:"random", name:BG_LABEL.random, rnd:true},
+     ...o.backgrounds.filter(b => b !== "random").map(b => ({id:b, name:BG_LABEL[b] || b, preview:"/api/preview/bg/" + b})),
+     {id:"custom", name:BG_LABEL.custom}], "bg", true);
+  buildSingle("stageTiles",
+    [{id:"random", name:"Random", rnd:true},
+     ...o.stages.map(s => ({id:s.id, name:s.name, preview:"/api/preview/stage/" + s.id})),
+     {id:"custom", name:BG_LABEL.custom}], "stage", true);
+  buildMulti("lightTiles", o.lights.map(l => ({id:l.id, name:l.name, preview:"/api/preview/light/" + l.id})), "lights", true);
+  buildMulti("camTiles", o.cam_fx, "cam_fx", false);
+  buildMulti("rotTiles", o.rotations, "rotations", false);
+
+  // battle mode + weapons (backend: battles / weapons)
+  const modes = (o.battles && o.battles.length ? o.battles : [{id:"off", name:"Dance (normal)"}, {id:"vs", name:"VS Fight"}])
+    .map(b => ({id:b.id, name:b.name, sub:b.id === "vs" ? "Team vs team ladai" : "Beat par dance"}));
+  buildSingle("modeTiles", modes, "battle", false);
+  let ws = (o.weapons || []).map(w => ({id:w.id, name:wname(w)}));
+  if (!ws.some(w => w.id === "random")) ws.push({id:"random", name:"Random", rnd:true});
+  if (!ws.some(w => w.id === state.weapon)) state.weapon = ws[0] ? ws[0].id : "talwar";
+  buildSingle("weaponTiles", ws, "weapon", false);
+  buildSingle("teamModeTiles", [
+    {id:"auto", name:"Auto", sub:"Apne aap barabar"},
+    {id:"manual", name:"Manual", sub:"Main khud chunuga"}], "teamMode", false);
+  // 2D stick-man style (backend: styles / modes2d / themes2d)
+  const ST = (o.styles && o.styles.length) ? o.styles : null;
+  $("styleWrap").style.display = ST ? "block" : "none";
+  if (!ST) state.style = "3d";
+  else buildSingle("styleTiles", ST.map(x => ({id:x.id, name:x.name, sub:STYLE_SUB[x.id] || ""})), "style", false);
+  const M2 = (o.modes2d && o.modes2d.length) ? o.modes2d : [
+    {id:"dance", name:"Funk Dance"}, {id:"vs", name:"VS Fight"}, {id:"badshah", name:"Bheed me Badshah"}, {id:"story", name:"Story"}];
+  const T2 = (o.themes2d && o.themes2d.length) ? o.themes2d : [
+    {id:"chalk", name:"Blackboard Chalk"}, {id:"paper", name:"Paper Sketch"}, {id:"neon", name:"Neon Dark"}, {id:"comic", name:"Comic Yellow"}, {id:"room3d", name:"3D Stage Room"}];
+  buildSingle("mode2dTiles", M2.map(x => ({id:x.id, name:x.name, sub:MODE2D_SUB[x.id] || ""})), "mode2d", false);
+  buildSingle("theme2dTiles", T2.map(x => ({id:x.id, name:x.name, sub:THEME2D_SUB[x.id] || ""})), "theme2d", false);
+  hooks.style = applyMode;
+  hooks.mode2d = applyMode;
+  hooks.battle = applyMode;
+  hooks.teamMode = renderTeams;
+  applyMode();
+  buildCreator(o);
+  buildLibs(o);
+}
+
+/* ---------- library: har tab ka apna system (search / like / folder / infinite scroll / player + trim) ---------- */
+const libUrl = (kind, name) => API + "/api/library/" + kind + "/" + name.split("/").map(encodeURIComponent).join("/");
+const LKIND = {music:"music", bg:"backgrounds", stage:"stages"};
+const LNAME = {music:"gaana", bg:"background", stage:"stage"};
+const LV = {music:[], bg:[], stage:[]}, LS = {}, SEL = {music:"", bg:"", stage:""}, LP = {}, TRIM = {}, PEAKS = {};
+const MAXDUR = 60;      // server limit (app.py me duration max 60). Badhana ho to dono jagah badlo.
+const CH = 30;          // ek baar me kitne items load hon
+let ltab = "music";
+const clampN = (v, a, b) => Math.min(b, Math.max(a, v));
+const fmt = t => { t = Math.max(0, t || 0); return Math.floor(t / 60) + ":" + String(Math.floor(t % 60)).padStart(2, "0"); };
+function loadLikes(){
+  let j = {};
+  try{ j = JSON.parse(localStorage.getItem("dsLikes") || "{}") || {}; }catch(_){}
+  for (const k in LKIND) LS[k] = new Set(Array.isArray(j[k]) ? j[k] : []);
+}
+function saveLikes(){
+  try{ const o = {}; for (const k in LS) o[k] = [...LS[k]]; localStorage.setItem("dsLikes", JSON.stringify(o)); }catch(_){}
+}
+loadLikes();
+const folderOf = n => { const i = n.indexOf("/"); return i < 0 ? "(root)" : n.slice(0, i); };
+function updateSums(){
+  $("musicSum").textContent = "🎵 " + (SEL.music ? (SEL.music === "random" ? "Random gaana" : SEL.music.replace(/^hf\//, "☁ ")) : "Koi gaana nahi chuna");
+  $("bgLibSum").textContent = SEL.bg ? "Library: " + (SEL.bg === "random" ? "Random" : SEL.bg) : "Library se kuch nahi chuna";
+  $("stageLibSum").textContent = SEL.stage ? "Library: " + (SEL.stage === "random" ? "Random" : SEL.stage) : "Library se kuch nahi chuna";
+}
+function setMusicSrc(v){
+  state.msrc = v;
+  document.querySelectorAll("#musicSrcTiles .tile").forEach(x => x.classList.toggle("sel", x.dataset.v === v));
+  markSel($("musicSrcTiles"));
+  $("musicLibWrap").style.display = v === "lib" ? "block" : "none";
+  $("musicUpWrap").style.display = v === "upload" ? "block" : "none";
+}
+function paintTiles(id, v){ const b = $(id); b.querySelectorAll(".tile").forEach(t => t.classList.toggle("sel", t.dataset.v === v)); markSel(b); }
+function pickLib(k, n){
+  SEL[k] = n;
+  if (k === "music") setMusicSrc("lib");
+  else if (k === "bg"){ state.bg = "custom"; paintTiles("bgTiles", "custom"); $("bgFileWrap").style.display = "block"; }
+  else { state.stage = "custom"; paintTiles("stageTiles", "custom"); $("stageFileWrap").style.display = "block"; }
+  updateSums();
+  LP[k].box.querySelectorAll("[data-n]").forEach(c => c.classList.toggle("sel", c.dataset.n === n));
+}
+
+/* ----- custom audio player + waveform trim (ek hi <audio>, gaane ki row ke andar) ----- */
+const AUD = new Audio(); AUD.preload = "metadata";
+let CUR = null;
+const PLHTML = `<canvas class="wf" aria-label="Waveform - handles kheench kar hissa chuno"></canvas>
+<div class="ptime"><span class="tcur">0:00</span><span class="tsel"></span><span class="ttot">0:00</span></div>
+<div class="pctl"><button type="button" class="pp" aria-label="Play / pause">▶</button><input type="range" class="seek" min="0" max="1000" value="0" aria-label="Seek"><button type="button" class="pv">▶ Hissa sunao</button></div>
+<div class="prow"><label>Start (sec)<input type="number" class="ps" min="0" step="0.5" inputmode="decimal"></label><label>Length (5-${MAXDUR} sec)<input type="number" class="pln" min="5" max="${MAXDUR}" step="0.5" inputmode="decimal"></label></div>
+<div class="chips pch"></div>
+<div class="perr"></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="go pick" style="font-size:15px;padding:11px 14px;flex:1 1 150px;width:auto">✅ Is hisse ko lo</button><button type="button" class="go clipsave" style="font-size:15px;padding:11px 14px;flex:1 1 150px;width:auto;background:var(--blue)">💾 Clip save karo</button></div>`;
+function closePlayer(){
+  if (!CUR) return;
+  AUD.pause(); cancelAnimationFrame(CUR.raf);
+  CUR.pl.remove(); CUR.row.classList.remove("open");
+  const b = CUR.row.querySelector('[data-a="play"]'); if (b) b.textContent = "▶";
+  CUR = null;
+}
+function drawWF(C){
+  const cv = C.cv, w = cv.clientWidth, h = cv.clientHeight; if (!w || !C.dur) return;
+  const dpr = window.devicePixelRatio || 1;
+  if (cv.width !== Math.round(w * dpr)){ cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); }
+  const g = cv.getContext("2d"); g.setTransform(dpr, 0, 0, dpr, 0, 0); g.clearRect(0, 0, w, h);
+  const x = t => t / C.dur * w, pk = C.peaks, N = pk ? pk.length : 120, bw = w / N;
+  for (let i = 0; i < N; i++){
+    const v = pk ? pk[i] : .28 + .2 * Math.sin(i * 1.7) * Math.sin(i * .31), bh = Math.max(3, v * h * .86), t = (i + .5) / N * C.dur;
+    g.fillStyle = (t >= C.s && t <= C.e) ? "#1d1b26" : "#c9c2d6";
+    g.fillRect(i * bw + .5, (h - bh) / 2, Math.max(1, bw - 1.5), bh);
+  }
+  g.fillStyle = "rgba(255,248,236,.5)"; g.fillRect(0, 0, x(C.s), h); g.fillRect(x(C.e), 0, w - x(C.e), h);
+  g.strokeStyle = "#ff6b9d"; g.lineWidth = 3; g.strokeRect(x(C.s) + 1.5, 1.5, Math.max(2, x(C.e) - x(C.s) - 3), h - 3);
+  g.fillStyle = "#ff6b9d";
+  [x(C.s), x(C.e)].forEach(px => g.fillRect(px - 5, h / 2 - 16, 10, 32));
+  g.fillStyle = "#4cc9f0"; g.fillRect(x(AUD.currentTime) - 1, 0, 2, h);
+}
+function syncP(C){
+  if (document.activeElement !== C.ps) C.ps.value = Math.round(C.s * 10) / 10;
+  if (document.activeElement !== C.plen) C.plen.value = Math.round((C.e - C.s) * 10) / 10;
+  C.tsel.textContent = fmt(C.s) + " – " + fmt(C.e) + " (" + Math.round(C.e - C.s) + "s)";
+  C.ttot.textContent = fmt(C.dur);
+  drawWF(C);
+}
+async function loadPeaks(C){
+  if (PEAKS[C.n]){ C.peaks = PEAKS[C.n]; return drawWF(C); }
+  try{
+    const r = await fetch(libUrl("music", C.n)); if (!r.ok) throw 0;
+    if ((+r.headers.get("content-length") || 0) > 40e6) throw 0;
+    const buf = await r.arrayBuffer(); if (buf.byteLength > 40e6) throw 0;
+    const AC = window.AudioContext || window.webkitAudioContext;
+    let ac; try{ ac = new AC({sampleRate:8000}); }catch(_){ ac = new AC(); }
+    const ab = await new Promise((res, rej) => ac.decodeAudioData(buf, res, rej));
+    const d = ab.getChannelData(0), N = 240, step = Math.max(1, Math.floor(d.length / N)), pk = new Float32Array(N); let mx = 1e-6;
+    for (let i = 0; i < N; i++){ let m = 0; for (let j = 0; j < step; j += Math.ceil(step / 200)){ const v = Math.abs(d[i * step + j] || 0); if (v > m) m = v; } pk[i] = m; if (m > mx) mx = m; }
+    for (let i = 0; i < N; i++) pk[i] = Math.pow(pk[i] / mx, .7);
+    try{ ac.close(); }catch(_){}
+    PEAKS[C.n] = pk;
+    if (CUR === C){ C.peaks = pk; drawWF(C); }
+  }catch(_){}     // waveform nahi bana to simple bars dikhte hain, trim phir bhi chalta hai
+}
+function tick(C){
+  if (CUR !== C) return;
+  const ct = AUD.currentTime;
+  if (C.prev && (ct >= C.e || AUD.ended)){ AUD.pause(); AUD.currentTime = C.s; C.prev = false; }
+  if (!C.seeking && C.dur) C.seek.value = ct / C.dur * 1000;
+  C.tcur.textContent = fmt(ct);
+  C.pp.textContent = C.hb.textContent = AUD.paused ? "▶" : "⏸";
+  drawWF(C);
+  C.raf = requestAnimationFrame(() => tick(C));
+}
+function openPlayer(row){
+  closePlayer(); stopClip();
+  const n = row.dataset.n, pl = el("div", "lpl", PLHTML), q = x => pl.querySelector(x);
+  row.appendChild(pl); row.classList.add("open");
+  const C = CUR = {row, n, pl, dur:0, s:0, e:0, peaks:PEAKS[n] || null, prev:false, drag:null, off:0, seeking:false, raf:0,
+    cv:q(".wf"), seek:q(".seek"), tcur:q(".tcur"), tsel:q(".tsel"), ttot:q(".ttot"), pp:q(".pp"), ps:q(".ps"), plen:q(".pln"), hb:row.querySelector('[data-a="play"]')};
+  AUD.src = libUrl("music", n);
+  AUD.onloadedmetadata = () => {
+    if (CUR !== C) return;
+    C.dur = isFinite(AUD.duration) ? AUD.duration : 0;
+    const tr = TRIM[n];
+    if (tr && tr.e <= C.dur + .5){ C.s = tr.s; C.e = Math.min(tr.e, C.dur); } else { C.s = 0; C.e = Math.min(C.dur, MAXDUR); }
+    syncP(C); if (!C.peaks) loadPeaks(C);
+  };
+  AUD.onerror = () => { if (CUR === C) q(".perr").textContent = "Gaana load nahi hua."; };
+  const chips = q(".pch");
+  [...new Set([15, 30, 45, MAXDUR])].forEach(L => {
+    const b = el("button", "", L + "s"); b.type = "button";
+    b.onclick = () => { if (!C.dur) return; C.e = Math.min(C.dur, C.s + L); C.s = Math.max(0, C.e - L); AUD.currentTime = C.s; syncP(C); };
+    chips.appendChild(b);
+  });
+  q(".pp").onclick = () => { C.prev = false; AUD.paused ? AUD.play().catch(() => {}) : AUD.pause(); };
+  q(".pv").onclick = () => { if (!C.dur) return; AUD.currentTime = C.s; C.prev = true; AUD.play().catch(() => {}); };
+  C.seek.onpointerdown = () => { C.seeking = true; };
+  C.seek.onchange = () => { C.seeking = false; };
+  C.seek.oninput = () => { if (C.dur) AUD.currentTime = C.seek.value / 1000 * C.dur; };
+  C.ps.oninput = () => {
+    const v = parseFloat(C.ps.value); if (isNaN(v) || !C.dur) return;
+    const len = C.e - C.s; C.s = clampN(v, 0, Math.max(0, C.dur - 5)); C.e = Math.min(C.dur, C.s + len); syncP(C);
+  };
+  C.plen.oninput = () => {
+    const v = parseFloat(C.plen.value); if (isNaN(v) || !C.dur) return;
+    const L = clampN(v, 5, MAXDUR); C.e = Math.min(C.dur, C.s + L); C.s = Math.max(0, C.e - L); syncP(C);
+  };
+  const tAt = e => { const r = C.cv.getBoundingClientRect(); return {px:e.clientX - r.left, w:r.width, t:(e.clientX - r.left) / r.width * C.dur}; };
+  C.cv.onpointerdown = e => {
+    if (!C.dur) return;
+    C.cv.setPointerCapture(e.pointerId);
+    const {px, w, t} = tAt(e), xs = C.s / C.dur * w, xe = C.e / C.dur * w;
+    if (Math.abs(px - xs) < 16) C.drag = "s";
+    else if (Math.abs(px - xe) < 16) C.drag = "e";
+    else {
+      if (!(px > xs && px < xe)){ const L = C.e - C.s; C.s = clampN(t - L / 2, 0, C.dur - L); C.e = C.s + L; }
+      C.drag = "m"; C.off = t - C.s;
+    }
+    C.cv.onpointermove(e);
+  };
+  C.cv.onpointermove = e => {
+    if (!C.drag) return;
+    const {t} = tAt(e);
+    if (C.drag === "s") C.s = clampN(t, Math.max(0, C.e - MAXDUR), Math.max(0, C.e - 5));
+    else if (C.drag === "e") C.e = clampN(t, Math.min(C.dur, C.s + 5), Math.min(C.dur, C.s + MAXDUR));
+    else { const L = C.e - C.s; C.s = clampN(t - C.off, 0, C.dur - L); C.e = C.s + L; }
+    syncP(C);
+  };
+  C.cv.onpointerup = C.cv.onpointercancel = () => { if (C.drag){ C.drag = null; C.prev = false; AUD.currentTime = C.s; } };
+  q(".pick").onclick = () => {
+    if (!C.dur) return;
+    TRIM[n] = {s:C.s, e:C.e};
+    $("start").value = Math.round(C.s * 10) / 10; $("startRnd").checked = false; $("start").disabled = false;
+    $("duration").value = Math.round((C.e - C.s) * 10) / 10;
+    pickLib("music", n);
+    q(".pick").textContent = "✅ Chuna gaya - Audio card me start/length set ho gaye";
+  };
+  q(".clipsave").onclick = () => {
+    if (!C.dur) return;
+    q(".clipsave").textContent = addClip(n, C.s, C.e) ? "✅ Clip save ho gayi (✂ Clips tab)" : "Ye clip pehle se saved hai";
+  };
+  row.scrollIntoView({block:"nearest", behavior:"smooth"});
+  AUD.play().catch(() => {});
+  C.raf = requestAnimationFrame(() => tick(C));
+}
+
+/* ----- har tab ka panel ----- */
+function likeLabel(P){ P.likeBtn.classList.toggle("on", P.liked); P.likeBtn.textContent = (P.liked ? "♥" : "♡") + " Liked (" + LS[P.k].size + ")"; }
+function musicRow(n){
+  const r = el("div", "lrow" + (SEL.music === n ? " sel" : "")); r.dataset.n = n;
+  r.innerHTML = n === "random" ? '<div class="lh"><span class="nm">🎲 Random gaana</span></div>'
+    : `<div class="lh"><button type="button" data-a="play" aria-label="Play">▶</button><span class="nm">${esc(n.replace(/^hf\//, "☁ "))}${CLIPS.some(c => c.n === n) ? ` <small>✂${CLIPS.filter(c => c.n === n).length}</small>` : ""}</span><button type="button" data-a="like" aria-label="Like">${LS.music.has(n) ? "♥" : "♡"}</button></div>`;
+  return r;
+}
+function imgCell(k, n){
+  const c = el("div", "lcell" + (SEL[k] === n ? " sel" : "")); c.dataset.n = n;
+  c.innerHTML = n === "random" ? '<div style="aspect-ratio:1;display:grid;place-items:center;font-size:34px;border-bottom:3px solid var(--ink)">🎲</div><span>Random</span>'
+    : `<img loading="lazy" alt="" src="${libUrl(LKIND[k], n)}"><button type="button" class="hb" data-a="like" aria-label="Like">${LS[k].has(n) ? "♥" : "♡"}</button><span>${esc(n)}</span>`;
+  return c;
+}
+function addChunk(P){
+  const part = P.rows.slice(P.shown, P.shown + CH), tgt = P.grid || P.box;
+  part.forEach(n => tgt.appendChild(P.k === "music" ? musicRow(n) : imgCell(P.k, n)));
+  P.shown += part.length;
+}
+function fillPanel(P){
+  let g = 0;
+  while (P.shown < P.rows.length && g++ < 12 && P.root.offsetParent !== null && P.sent.getBoundingClientRect().top < innerHeight + 500) addChunk(P);
+}
+function drawPanel(P){
+  if (CUR && P.box.contains(CUR.row)) closePlayer();
+  const k = P.k, all = LV[k], q = P.q.trim().toLowerCase();
+  const items = all.filter(n => (!q || n.toLowerCase().includes(q)) && (!P.folder || folderOf(n) === P.folder) && (!P.liked || LS[k].has(n)))
+    .sort((a, b) => (LS[k].has(b) ? 1 : 0) - (LS[k].has(a) ? 1 : 0));
+  P.rows = (all.length && !q && !P.folder && !P.liked ? ["random"] : []).concat(items);
+  likeLabel(P);
+  const fs = [...new Set(all.map(folderOf))].sort();
+  P.fold.innerHTML = "";
+  if (fs.length > 1) ["", ...fs].forEach(f => {
+    const b = el("button", P.folder === f ? "on" : "", f === "" ? "Sab" : (f === "hf" ? "☁ HF" : esc(f)));
+    b.type = "button"; b.dataset.f = f; P.fold.appendChild(b);
+  });
+  P.box.innerHTML = ""; P.shown = 0; P.grid = null;
+  if (k !== "music"){ P.grid = el("div", "lgrid"); P.box.appendChild(P.grid); }
+  P.info.textContent = !all.length ? "Is library me abhi kuch nahi hai (repo ke folder me files daalo, phir 🔄 dabao)."
+    : (items.length ? items.length + " / " + all.length + " mile - neeche scroll karo, aur load honge" : "Kuch nahi mila - search ya filter badlo.");
+  fillPanel(P);
+}
+function mkPanel(k){
+  const P = {k, q:"", folder:"", liked:false, shown:0, rows:[], grid:null};
+  P.root = el("div", "lpanel", `<div class="toolbar" style="margin-top:12px"><input type="text" class="lq" placeholder="🔍 ${LNAME[k]} search..." style="flex:1 1 160px;width:auto" autocomplete="off" autocapitalize="off"><button type="button" class="ll">♡ Liked</button><button type="button" class="lr" aria-label="Refresh">🔄</button></div><div class="chips lf"></div><div class="lbox"></div><div class="lsent" style="height:2px"></div><p class="hint linfo" style="margin:10px 0 0"></p>`);
+  const q = x => P.root.querySelector(x);
+  P.inp = q(".lq"); P.likeBtn = q(".ll"); P.fold = q(".lf"); P.box = q(".lbox"); P.sent = q(".lsent"); P.info = q(".linfo");
+  P.inp.oninput = () => { P.q = P.inp.value; drawPanel(P); };
+  P.likeBtn.onclick = () => { P.liked = !P.liked; drawPanel(P); };
+  P.fold.onclick = e => { const b = e.target.closest("button"); if (!b) return; P.folder = b.dataset.f; drawPanel(P); };
+  q(".lr").onclick = async e => {
+    const b = e.currentTarget; b.disabled = true;
+    try{
+      if (k === "music"){ await fetchJSON("/api/music/refresh"); LV.music = await fetchJSON("/api/music"); }
+      else { const L = await fetchJSON("/api/library"); LV.bg = L.backgrounds || []; LV.stage = L.stages || []; }
+    }catch(err){ P.info.textContent = "List nahi mili: " + err.message; }
+    b.disabled = false; drawPanel(P);
+  };
+  P.box.onclick = e => {
+    const c = e.target.closest("[data-n]"); if (!c || e.target.closest(".lpl")) return;
+    const n = c.dataset.n, a = e.target.closest("[data-a]"), act = a ? a.dataset.a : "pick";
+    if (act === "like"){
+      LS[k].has(n) ? LS[k].delete(n) : LS[k].add(n); saveLikes();
+      a.textContent = LS[k].has(n) ? "♥" : "♡"; likeLabel(P); return;
+    }
+    if (k !== "music") return pickLib(k, n);
+    if (n === "random") return pickLib(k, n);
+    if (CUR && CUR.row === c){
+      if (act === "play") AUD.paused ? AUD.play().catch(() => {}) : AUD.pause(); else closePlayer();
+    } else openPlayer(c);
+  };
+  new IntersectionObserver(es => { if (es[0].isIntersecting) fillPanel(P); }, {rootMargin:"500px"}).observe(P.sent);
+  return P;
+}
+/* ----- clips: gaane ka chuna hua hissa save karke rakho ----- */
+let CLIPS = [];
+try{ CLIPS = JSON.parse(localStorage.getItem("dsClips") || "[]"); if (!Array.isArray(CLIPS)) CLIPS = []; }catch(_){ CLIPS = []; }
+const saveClips = () => { try{ localStorage.setItem("dsClips", JSON.stringify(CLIPS)); }catch(_){} };
+let clipPlay = null;
+function setClipBtns(){
+  LP.clips.box.querySelectorAll("[data-id]").forEach(r => { const b = r.querySelector('[data-a="cplay"]'); if (b) b.textContent = clipPlay && clipPlay.id === r.dataset.id ? "⏸" : "▶"; });
+}
+function stopClip(){
+  if (!clipPlay) return;
+  AUD.pause(); AUD.ontimeupdate = null; AUD.onloadedmetadata = null; clipPlay = null;
+  if (LP.clips) setClipBtns();
+}
+function addClip(n, s, e){
+  if (CLIPS.some(c => c.n === n && Math.abs(c.s - s) < .2 && Math.abs(c.e - e) < .2)) return false;
+  CLIPS.unshift({id:Date.now().toString(36) + Math.random().toString(36).slice(2, 5), n, s:Math.round(s * 10) / 10, e:Math.round(e * 10) / 10, t:Date.now()});
+  saveClips(); renderClips(); return true;
+}
+function useClip(c){
+  TRIM[c.n] = {s:c.s, e:c.e};
+  $("start").value = c.s; $("startRnd").checked = false; $("start").disabled = false;
+  $("duration").value = Math.round((c.e - c.s) * 10) / 10;
+  pickLib("music", c.n);
+}
+function playClip(c){
+  if (clipPlay && clipPlay.id === c.id){ stopClip(); return; }
+  closePlayer(); stopClip();
+  clipPlay = c;
+  AUD.onerror = null;
+  AUD.src = libUrl("music", c.n);
+  AUD.onloadedmetadata = () => { AUD.currentTime = c.s; AUD.play().catch(() => {}); };
+  AUD.ontimeupdate = () => { if (AUD.currentTime >= c.e) stopClip(); };
+  setClipBtns();
+}
+function renderClips(){
+  const P = LP.clips; if (!P) return;
+  const q = P.q.trim().toLowerCase(), items = CLIPS.filter(c => !q || c.n.toLowerCase().includes(q));
+  document.querySelector('#libTabs [data-k="clips"]').textContent = "✂ Clips (" + CLIPS.length + ")";
+  P.box.innerHTML = "";
+  P.info.textContent = CLIPS.length ? items.length + " clip" : "Abhi koi clip nahi. Music tab me gaana kholo, hissa chuno aur 💾 Clip save karo dabao.";
+  items.forEach(c => {
+    const on = SEL.music === c.n && TRIM[c.n] && Math.abs(TRIM[c.n].s - c.s) < .2 && Math.abs(TRIM[c.n].e - c.e) < .2;
+    const r = el("div", "lrow" + (on ? " sel" : ""),
+      `<div class="lh"><button type="button" data-a="cplay" aria-label="Play">${clipPlay && clipPlay.id === c.id ? "⏸" : "▶"}</button><span class="nm">${esc(c.n.replace(/^hf\//, "☁ "))}<br><small>${fmt(c.s)} – ${fmt(c.e)} (${Math.round(c.e - c.s)}s)</small></span><button type="button" data-a="cuse" aria-label="Use">✅</button><button type="button" data-a="cdel" aria-label="Delete">🗑</button></div>`);
+    r.dataset.id = c.id; P.box.appendChild(r);
+  });
+}
+function mkClipPanel(){
+  const P = {k:"clips", q:"", shown:0, rows:[]};
+  P.root = el("div", "lpanel", `<div class="toolbar" style="margin-top:12px"><input type="text" class="lq" placeholder="🔍 clip search..." style="flex:1 1 160px;width:auto" autocomplete="off" autocapitalize="off"><button type="button" class="lx" style="background:var(--red);color:#fff">🗑 Sab</button></div><div class="lbox"></div><p class="hint linfo" style="margin:10px 0 0"></p>`);
+  const q = x => P.root.querySelector(x);
+  P.inp = q(".lq"); P.box = q(".lbox"); P.info = q(".linfo"); P.sent = P.root;
+  P.inp.oninput = () => { P.q = P.inp.value; renderClips(); };
+  q(".lx").onclick = () => { if (!CLIPS.length || !confirm("Saari clips delete karni hain?")) return; stopClip(); CLIPS = []; saveClips(); renderClips(); };
+  P.box.onclick = e => {
+    const r = e.target.closest("[data-id]"), a = e.target.closest("[data-a]"); if (!r || !a) return;
+    const c = CLIPS.find(x => x.id === r.dataset.id); if (!c) return;
+    if (a.dataset.a === "cdel"){ if (clipPlay && clipPlay.id === c.id) stopClip(); CLIPS = CLIPS.filter(x => x !== c); saveClips(); renderClips(); }
+    else if (a.dataset.a === "cuse"){ useClip(c); renderClips(); }
+    else playClip(c);
+  };
+  return P;
+}
+["music", "bg", "stage"].forEach(k => { LP[k] = mkPanel(k); $("libPanels").appendChild(LP[k].root); });
+LP.clips = mkClipPanel(); $("libPanels").appendChild(LP.clips.root);
+function showLibTab(k){
+  if (k !== ltab){ closePlayer(); stopClip(); }
+  ltab = k;
+  document.querySelectorAll("#libTabs button").forEach(b => b.classList.toggle("on", b.dataset.k === k));
+  for (const x in LP) LP[x].root.classList.toggle("on", x === k);
+  fillPanel(LP[k]);
+}
+$("libTabs").onclick = e => { const b = e.target.closest("button"); if (b) showLibTab(b.dataset.k); };
+document.querySelectorAll(".openlib").forEach(b => b.onclick = () => { showLibTab(b.dataset.k); goTo("sec-lib"); });
+function buildLibs(o){
+  const L = o.library || {};
+  LV.music = L.music || []; LV.bg = L.backgrounds || []; LV.stage = L.stages || [];
+  if (!state.msrc) setMusicSrc(LV.music.length ? "lib" : "upload");
+  updateSums();
+  ["music", "bg", "stage"].forEach(k => drawPanel(LP[k])); renderClips();
+  showLibTab(ltab);
+}
+
+/* ---------- VS fight UI ---------- */
+const is2d = () => state.style === "2d";
+const fightOn = () => is2d() ? state.mode2d === "vs" : state.battle === "vs";
+function applyMode(){
+  const d2 = is2d(), vs = fightOn();
+  $("mode3dWrap").style.display = d2 ? "none" : "block";
+  $("box2d").style.display = d2 ? "block" : "none";
+  $("battleSub").style.display = vs ? "block" : "none";
+  $("teamsWrap").style.display = vs ? "block" : "none";
+  $("danceOnly").classList.toggle("dim", d2 ? (state.mode2d === "vs" || state.mode2d === "badshah") : state.battle === "vs");
+  $("clothWrap").classList.toggle("dim", d2);
+  ["sec-stage", "sec-cam"].forEach(id => $(id).classList.toggle("is2d", d2));
+  renderTeams();
+}
+function smallerTeam(){
+  let a = 0, b = 0;
+  picked.forEach(id => { if (teamOf[id] === 0) a++; else if (teamOf[id] === 1) b++; });
+  return a <= b ? 0 : 1;
+}
+function renderTeams(){
+  const box = $("teamBox");
+  const show = fightOn() && state.teamMode === "manual";
+  box.style.display = show ? "block" : "none";
+  if (!show) return;
+  box.innerHTML = "";
+  if (picked.length < 2){
+    box.appendChild(el("p", "hint", "Manual teams ke liye upar se kam se kam 2 characters chuno. Abhi Auto chalega."));
+    return;
+  }
+  picked.forEach(id => { if (teamOf[id] === undefined) teamOf[id] = smallerTeam(); });
+  picked.forEach((id, i) => {
+    const row = el("div", "trow");
+    row.appendChild(el("b", "", `${i + 1}. ${esc(nameOf(id))}`));
+    const seg = el("div", "seg");
+    [["A", 0, "a"], ["B", 1, "b"]].forEach(([lb, v, c]) => {
+      const b = el("button", c + (teamOf[id] === v ? " on" : ""), lb);
+      b.type = "button";
+      b.setAttribute("aria-pressed", teamOf[id] === v);
+      b.setAttribute("aria-label", `${nameOf(id)} Team ${lb}`);
+      b.onclick = () => { teamOf[id] = v; renderTeams(); };
+      seg.appendChild(b);
+    });
+    row.appendChild(seg);
+    box.appendChild(row);
+  });
+  box.appendChild(el("p", "hint", "A = pehli team, B = doosri team. Extra add hue dancers apne aap kam wali team me jaayenge."));
+}
+/* backend format: "1,2/3,4" (dancer numbers). Returns null if invalid. */
+function teamsValue(newRandom){
+  if (!fightOn() || state.teamMode !== "manual" || picked.length < 2) return "auto";
+  const A = [], B = [];
+  picked.forEach((id, i) => (teamOf[id] === 1 ? B : A).push(i + 1));
+  let base = picked.length + newRandom;
+  let total = Math.min(MAX, Math.max(base, parseInt($("count").value) || 0));
+  for (let k = picked.length + 1; k <= total; k++) (A.length <= B.length ? A : B).push(k);
+  if (!A.length || !B.length) return null;
+  return A.join(",") + "/" + B.join(",");
+}
+
+/* ---------- characters ---------- */
+const CHAR2D_TYPES = [["random","Random"],["badshah","Badshah"],["ninja","Ninja"],["cowboy","Cowboy"],["rockstar","Rockstar"],["girl","Ladki"],
+  ["raja","Raja (pagdi)"],["pehelwan","Pehelwan"],["goonda","Goonda"],["dj","DJ"],["kid","Chhotu"],["robot","Robot"],["don","Don"]];
+function count2d(){
+  const v = parseInt($("n2d").value) || 0;
+  return Math.max(1, Math.min(8, v || picked.length || 3));
+}
+function renderChars2d(){
+  const box = $("chars2dBox"); if (!box) return;
+  const old = [...box.querySelectorAll("select")].map(x => x.value);
+  const n = count2d();
+  box.innerHTML = "";
+  for (let i = 0; i < n; i++){
+    const w = el("div"), nm = (CHARS.find(c => c.id === picked[i]) || {}).name;
+    w.innerHTML = `<label style="font-size:12px;font-weight:800;display:block;margin-bottom:3px">Character ${i + 1}${nm && !parseInt($("n2d").value) ? " - " + esc(nm) : ""}</label>` +
+      `<select>${CHAR2D_TYPES.map(t => `<option value="${t[0]}">${t[1]}</option>`).join("")}</select>`;
+    box.appendChild(w);
+    if (old[i]) w.querySelector("select").value = old[i];
+  }
+}
+function chars2dValue(){ return [...document.querySelectorAll("#chars2dBox select")].map(x => x.value).join(","); }
+$("n2d").onchange = renderChars2d;
+function updateCount(){
+  renderChars2d();
+  $("selCount").textContent = picked.length + " chune";
+  document.querySelectorAll(".char").forEach(el => {
+    const on = picked.includes(el.dataset.id);
+    el.classList.toggle("sel", on);
+    el.setAttribute("aria-pressed", on);
+  });
+  renderTeams();
+}
+function buildChars(list){
+  CHARS = list;
+  const box = $("chars");
+  box.innerHTML = "";
+  picked = picked.filter(id => list.some(c => c.id === id));
+  list.forEach(c => {
+    const d = el("div", "char");
+    d.dataset.id = c.id; setA11y(d);
+    d.setAttribute("aria-label", c.name);
+    d.innerHTML = `<div class="tick">✓</div>` +
+      (c.custom ? `<button class="del" title="Delete karo" aria-label="${esc(c.name)} delete karo">✕</button><div class="cb">custom</div>` : "") +
+      `<img loading="lazy" src="${API}/api/preview/${encodeURIComponent(c.id)}" alt="${esc(c.name)}"><span>${esc(c.name)}</span>`;
+    d.onclick = () => {
+      if (picked.includes(c.id)) picked = picked.filter(x => x !== c.id);
+      else if (picked.length >= MAX) return alert("Max " + MAX + " characters hi chun sakte ho.");
+      else picked.push(c.id);
+      updateCount();
+    };
+    const del = d.querySelector(".del");
+    if (del) del.onclick = async ev => {
+      ev.stopPropagation();
+      if (!confirm(`"${c.name}" delete karna hai?`)) return;
+      try{
+        const r = await fetch(API + "/api/character/" + encodeURIComponent(c.id), {method:"DELETE"});
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        picked = picked.filter(x => x !== c.id);
+        await refreshChars();
+      }catch(e){ alert("Delete nahi hua: " + e.message); }
+    };
+    box.appendChild(d);
+  });
+  updateCount();
+}
+async function refreshChars(){
+  const list = await fetchJSON("/api/characters", 2);
+  buildChars(list);
+  setStatus("ok", "Connected - " + list.length + " characters", false);
+}
+$("randPick").onclick = () => {
+  if (!CHARS.length) return;
+  picked = CHARS.map(c => c.id).sort(() => Math.random() - .5).slice(0, 3);
+  updateCount();
+};
+$("clearPick").onclick = () => { picked = []; updateCount(); };
+
+$("makeRand").onclick = async () => {
+  const b = $("makeRand");
+  b.disabled = true; const old = b.textContent; b.textContent = "Ban rahe hain...";
+  try{
+    const fd = new FormData(); fd.append("n", $("newN").value);
+    const r = await fetch(API + "/api/character/random", {method:"POST", body:fd});
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const made = await r.json();
+    await refreshChars();
+    made.forEach(m => { if (picked.length < MAX) picked.push(m.id); });
+    updateCount();
+  }catch(e){ alert("Random character nahi bane: " + e.message); }
+  b.disabled = false; b.textContent = old;
+};
+
+/* ---------- custom character creator ---------- */
+const SLIDERS = [
+  ["head","Sir (head)",.1,.3,.01,.15], ["body","Body",.06,.22,.01,.11], ["arm","Haath",.025,.07,.005,.04],
+  ["leg","Pair",.03,.09,.005,.058], ["height","Height",.8,1.25,.01,1], ["foot","Jootay",.8,2.5,.1,1]
+];
+function buildCreator(o){
+  const sl = $("cSliders");
+  if (!sl.children.length){
+    SLIDERS.forEach(([k, name, mn, mx, st, df]) => {
+      const w = el("div", "", `<div class="rv"><span>${name}</span><b id="cv_${k}">${df}</b></div>
+        <input type="range" id="c_${k}" min="${mn}" max="${mx}" step="${st}" value="${df}" aria-label="${name}">`);
+      sl.appendChild(w);
+      w.querySelector("input").oninput = e => { $("cv_" + k).textContent = e.target.value; };
+    });
+  }
+  const mk = (boxId, items) => {
+    const box = $(boxId); box.innerHTML = "";
+    items.forEach(([val, label]) => {
+      const lb = el("label", "", `<input type="checkbox" value="${val}">${esc(label)}`);
+      lb.querySelector("input").onchange = e => lb.classList.toggle("on", e.target.checked);
+      box.appendChild(lb);
+    });
+  };
+  mk("cAccs", (o.accessories || []).map(a => [a, ACC_LABEL[a] || a]));
+  mk("cMoves", (o.moves || MOVE_LABEL).map((m, i) => [i, MOVE_LABEL[i] || m]));
+  [...$("cMoves").querySelectorAll("input")].slice(0, 4).forEach(i => { i.checked = true; i.parentElement.classList.add("on"); });
+}
+const checkedVals = id => [...$(id).querySelectorAll("input:checked")].map(i => i.value);
+$("cMake").onclick = async () => {
+  const b = $("cMake"), msg = $("cMsg");
+  b.disabled = true; msg.textContent = "Bana raha hoon...";
+  try{
+    const fd = new FormData();
+    fd.append("name", $("cName").value || "Custom");
+    fd.append("skin", $("cSkin").value); fd.append("top", $("cTop").value); fd.append("pant", $("cPant").value);
+    fd.append("shoe", $("cShoe").value); fd.append("acc", $("cAcc").value);
+    SLIDERS.forEach(([k]) => fd.append(k, $("c_" + k).value));
+    fd.append("accs", checkedVals("cAccs").join(","));
+    fd.append("moves", checkedVals("cMoves").join(",") || "0,1,2,3");
+    const r = await fetch(API + "/api/character/create", {method:"POST", body:fd});
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const c = await r.json();
+    await refreshChars();
+    if (picked.length < MAX) picked.push(c.id);
+    updateCount();
+    msg.textContent = `"${c.name}" ban gaya aur chun liya gaya!`;
+  }catch(e){ msg.textContent = "Error: " + e.message; }
+  b.disabled = false;
+};
+
+/* ---------- sync / cloth / sliders ---------- */
+$("syncTiles").onclick = e => {
+  const t = e.target.closest(".tile"); if (!t) return;
+  state.sync = t.dataset.v;
+  document.querySelectorAll("#syncTiles .tile").forEach(x => x.classList.toggle("sel", x === t));
+  markSel($("syncTiles"));
+};
+$("clothTiles").onclick = e => {
+  const t = e.target.closest(".tile"); if (!t) return;
+  state.cloth = t.dataset.v;
+  document.querySelectorAll("#clothTiles .tile").forEach(x => x.classList.toggle("sel", x === t));
+  markSel($("clothTiles"));
+  $("clothSub").style.display = state.cloth === "upload" ? "block" : "none";
+  $("clothTarget").style.display = state.cloth === "none" ? "none" : "block";
+};
+[$("syncTiles"), $("clothTiles")].forEach(b => b.querySelectorAll(".tile").forEach(t => setA11y(t)));
+markSel($("syncTiles")); markSel($("clothTiles"));
+$("danceSpeed").oninput = e => { $("danceSpeedV").textContent = (+e.target.value).toFixed(1) + "x"; };
+$("rotSpeed").oninput = e => { $("rotSpeedV").textContent = (+e.target.value).toFixed(1) + "x"; };
+function fileLabel(inputId, nameId, boxSel, dflt){
+  $(inputId).onchange = () => {
+    const f = $(inputId).files[0];
+    $(nameId).textContent = f ? f.name : dflt;
+    const box = document.querySelector(boxSel); if (box) box.classList.toggle("has", !!f);
+  };
+}
+fileLabel("bgimg", "bgName", 'label[for="bgimg"]', "Apni background image chuno");
+fileLabel("clothimg", "clothName", 'label[for="clothimg"]', "Kapde ki image chuno");
+fileLabel("audio", "audName", "#audBox", "Song / funk audio chuno");
+fileLabel("stageimg", "stageName", 'label[for="stageimg"]', "Floor image chuno");
+$("musicSrcTiles").onclick = e => { const t = e.target.closest(".tile"); if (t) setMusicSrc(t.dataset.v); };
+$("musicSrcTiles").querySelectorAll(".tile").forEach(t => setA11y(t));
+$("stageScale").oninput = e => { $("stageScaleV").textContent = e.target.value; };
+$("startRnd").onchange = e => { $("start").disabled = e.target.checked; };
+$("dice").onclick = () => { $("seed").value = Math.floor(Math.random() * 1000000); };
+$("count").onchange = renderTeams;
+
+/* keyboard: Enter / Space on tiles and characters */
+document.addEventListener("keydown", e => {
+  if (e.key !== "Enter" && e.key !== " ") return;
+  const t = e.target;
+  if (t && t.matches && t.matches(".tile, .char, .scell")) { e.preventDefault(); t.click(); }
+});
+
+/* ---------- navigation ---------- */
+const SECTIONS = ["sec-chars", "sec-mode", "sec-stage", "sec-cam", "sec-lib", "sec-audio", "sec-game"];
+const navLinks = [...document.querySelectorAll("#nav a")];
+const TABS = [...SECTIONS, "sec-saved", "outPanel"];
+function setActive(id){ navLinks.forEach(a => { const on = a.dataset.t === id; a.classList.toggle("on", on); if (on) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current"); }); }
+function goTo(id){
+  if (!$(id)) return;
+  TABS.forEach(t => $(t).classList.toggle("tabhide", t !== id));
+  setActive(id);
+  document.body.classList.toggle("ingame", id === "sec-game");
+  window.scrollTo(0, 0);
+  if (id !== "sec-lib"){ closePlayer(); stopClip(); }
+  if (id !== "sec-saved") hideViewer();
+  if (id === "sec-lib") fillPanel(LP[ltab]);
+  if (id === "sec-saved") renderSaved();
+  try{ history.replaceState(null, "", "#" + id); }catch(_){}
+}
+navLinks.forEach(a => a.addEventListener("click", e => { e.preventDefault(); goTo(a.dataset.t); }));
+
+/* peeche / aage (Next) buttons: har tab me, mobile aur desktop dono par */
+const ORDER = [...SECTIONS, "outPanel", "sec-saved"];
+const tabOn = id => id !== "outPanel" || $("outPanel").style.display === "block";
+function stepTo(id, d){
+  let i = ORDER.indexOf(id) + d;
+  while (i >= 0 && i < ORDER.length && !tabOn(ORDER[i])) i += d;
+  if (i >= 0 && i < ORDER.length) goTo(ORDER[i]);
+}
+function mkStep(id, i){
+  const row = el("div", "stepnav");
+  if (i > 0){ const b = el("button", "", "← Peeche"); b.type = "button"; b.onclick = () => stepTo(id, -1); row.appendChild(b); }
+  if (i < ORDER.length - 1){ const b = el("button", "nx", "Aage →"); b.type = "button"; b.onclick = () => stepTo(id, 1); row.appendChild(b); }
+  return row;
+}
+ORDER.forEach((id, i) => {
+  const sec = $(id);
+  sec.appendChild(mkStep(id, i));
+  if (id === "sec-lib"){ const t = mkStep(id, i); t.style.cssText = "margin:0 0 12px;padding:0 0 12px;border-top:0;border-bottom:3px dashed var(--ink)"; sec.querySelector("h2").after(t); }   // lambi list me upar bhi Next
+});
+
+/* floating "Video banao" button: hide when the real one is on screen */
+new IntersectionObserver(es => { $("fab").classList.toggle("hide", es[0].isIntersecting || $("go").disabled); }, {threshold:.4}).observe($("go"));
+$("fab").onclick = () => $("go").click();
+$("goSide").onclick = () => $("go").click();
+function setBusy(b){
+  $("go").disabled = b; $("goSide").disabled = b;
+  $("fab").disabled = b; if (b) $("fab").classList.add("hide");
+}
+
+/* ---------- generate ---------- */
+function postForm(url, fd, onProg){
+  return new Promise((res, rej) => {
+    const x = new XMLHttpRequest();
+    x.open("POST", url);
+    x.upload.onprogress = e => { if (e.lengthComputable) onProg(e.loaded / e.total); };
+    x.onload = () => {
+      let j = null; try{ j = JSON.parse(x.responseText); }catch(_){}
+      if (x.status >= 200 && x.status < 300 && j) return res(j);
+      let d = j && j.detail;
+      if (d && typeof d !== "string") d = JSON.stringify(d);
+      rej(new Error(d || ("HTTP " + x.status)));
+    };
+    x.onerror = () => rej(new Error("Network error - internet ya server check karo"));
+    x.ontimeout = () => rej(new Error("Upload timeout"));
+    x.send(fd);
+  });
+}
+
+$("go").onclick = async () => {
+  const f = $("audio").files[0], upl = state.msrc === "upload";
+  if (upl && !f){ goTo("sec-audio"); return alert("Pehle audio file chuno."); }
+  if (!upl && !SEL.music){ goTo("sec-audio"); return alert("Library se gaana chuno ya apna gaana upload karo."); }
+  const bgF = $("bgimg").files[0], bgL = SEL.bg, stF = $("stageimg").files[0], stL = SEL.stage;
+  if (!is2d() && state.bg === "custom" && !bgF && !bgL) return alert("Custom background ke liye image chuno / library se lo, ya koi aur background lo.");
+  if (!is2d() && state.stage === "custom" && !stF && !stL) return alert("Custom stage ke liye image chuno / library se lo, ya koi aur stage lo.");
+  if (!is2d() && state.cloth === "upload" && !$("clothimg").files[0]) return alert("Kapde ki image chuno ya koi aur cloth option lo.");
+
+  const newRandom = parseInt($("newRandom").value) || 0;
+  const vs = !is2d() && state.battle === "vs";
+  const teams = teamsValue(newRandom);
+  if (teams === null){ goTo("sec-mode"); return alert("Dono teams me kam se kam ek dancer hona chahiye."); }
+
+  $("outPanel").style.display = "block";
+  $("navOut").hidden = false;
+  goTo("outPanel");
+  $("err").textContent = "";
+  $("result").innerHTML = "";
+  $("barfill").style.width = "0%";
+  $("msg").textContent = "Upload ho raha hai...";
+  setBusy(true);
+
+  const fd = new FormData();
+  if (upl) fd.append("audio", f); else fd.append("music", SEL.music);
+  if (!is2d() && state.bg === "custom"){ if (bgF) fd.append("bg_image", bgF); else fd.append("bg_lib", bgL); }
+  if (!is2d() && state.stage === "custom"){ if (stF) fd.append("stage_image", stF); else fd.append("stage_lib", stL); fd.append("stage_scale", $("stageScale").value); }
+  if (!is2d() && state.cloth === "upload") fd.append("cloth_image", $("clothimg").files[0]);
+  fd.append("characters", picked.length ? picked.join(",") : (newRandom > 0 ? "" : "random"));
+  fd.append("count", $("count").value);
+  fd.append("new_random", newRandom);
+  fd.append("bg", state.bg);
+  fd.append("stage", state.stage === "custom" ? "disco" : state.stage);
+  fd.append("lights", multiVal("lights"));
+  fd.append("cam_fx", multiVal("cam_fx"));
+  fd.append("rotations", multiVal("rotations"));
+  fd.append("rot_speed", $("rotSpeed").value);
+  fd.append("speed_mode", state.speed);
+  fd.append("dance_speed", $("danceSpeed").value);
+  fd.append("cloth_mode", state.cloth);
+  fd.append("cloth_target", ($("clothTargetIn").value || "all").trim() || "all");
+  fd.append("sync", state.sync);
+  fd.append("start", $("startRnd").checked ? -1 : ($("start").value || 0));
+  fd.append("duration", $("duration").value || 20);
+  fd.append("res", $("res").value);
+  fd.append("fps", $("fps").value);
+  fd.append("seed", $("seed").value === "" ? -1 : $("seed").value);
+  fd.append("battle", vs ? "vs" : "off");
+  fd.append("weapon", state.weapon);
+  fd.append("teams", teams);
+  fd.append("team_a", ($("teamA").value || "").trim() || "TEAM RED");
+  fd.append("team_b", ($("teamB").value || "").trim() || "TEAM BLUE");
+  fd.append("style", state.style);
+  fd.append("mode2d", state.mode2d);
+  fd.append("theme2d", state.theme2d);
+  fd.append("texts2d", ($("texts2d").value || "").trim());
+  fd.append("crowd2d", $("crowd2d").value || 0);
+  if (is2d()){
+    fd.append("chars2d", chars2dValue());
+    fd.append("public2d", $("public2d").value);
+    fd.append("blur2d", $("blur2d").value);
+    fd.append("show_text2d", $("text2d").checked ? 1 : 0);
+    const b2 = $("bg2d").files[0];
+    if (b2) fd.append("bg2d", b2);
+  }
+
+  window.__req = {music: upl ? f.name : (SEL.music === "random" ? "" : SEL.music), start: parseFloat($("start").value) || 0,
+                  rnd: $("startRnd").checked, dur: parseFloat($("duration").value) || 20};
+  try{
+    const j = await postForm(API + "/api/generate", fd, p => {
+      const pc = Math.round(p * 100);
+      $("barfill").style.width = Math.round(p * 10) + "%";
+      $("msg").textContent = pc < 100 ? `Upload ho raha hai... ${pc}%` : "Server process kar raha hai...";
+    });
+    window.__meta = j;
+    poll(j.job_id, 0);
+    if (newRandom > 0) refreshChars().catch(() => {});   // naye random characters list me dikhein
+  }catch(e){
+    $("err").textContent = "Error: " + e.message;
+    $("msg").textContent = "";
+    setBusy(false);
+  }
+};
+
+function nameOf(id){ const c = CHARS.find(x => x.id === id); return c ? c.name : id; }
+function listOf(a){ return (a && a.length) ? a.join(", ") : "none"; }
+
+async function saveVideo(url, btn){
+  const old = btn.textContent;
+  btn.disabled = true; btn.textContent = "Ho raha hai...";
+  try{
+    const r = await fetch(url);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const b = await r.blob();
+    const file = new File([b], "dance_short.mp4", {type:"video/mp4"});
+    if (navigator.canShare && navigator.canShare({files:[file]})){
+      await navigator.share({files:[file], title:"Dance Short"});
+    } else {
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(b); a.download = "dance_short.mp4";
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+    }
+  }catch(e){
+    if (e && e.name !== "AbortError") window.open(url, "_blank");
+  }
+  btn.disabled = false; btn.textContent = old;
+}
+
+async function poll(id, fails){
+  try{
+    const r = await fetch(API + "/api/status/" + id);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json();
+    $("barfill").style.width = Math.round((j.progress || 0) * 100) + "%";
+    $("msg").textContent = j.message || "";
+    if (j.status === "done"){
+      const url = API + "/api/video/" + id;
+      const wide = (() => { const [w, h] = $("res").value.split("x").map(Number); return w > h; })();
+      const m = window.__meta || {};
+      const fight = m.battle ? `Mode: VS Fight &nbsp;|&nbsp; Weapon: ${esc(m.weapon ?? "")} &nbsp;|&nbsp; Teams: ${esc(Array.isArray(m.teams) ? m.teams.join(",") : (m.teams ?? ""))}<br>` : "";
+      const two = m.style === "2d" ? `Style: 2D Stick-man &nbsp;|&nbsp; Mode: ${esc(m.mode2d ?? "")} &nbsp;|&nbsp; Theme: ${esc(m.theme2d ?? "")}<br>` : "";
+      $("result").innerHTML =
+        `<video controls playsinline preload="metadata" class="${wide ? "wide" : ""}" src="${url}"></video>
+         <div class="resbtns">
+           <button class="go" id="saveBtn">⬇ Download / Share</button>
+           <button class="alt" id="againBtn">🔁 Naya video</button>
+         </div>
+         <div class="hint" id="saveNote" style="margin-top:10px">Local storage me save ho raha hai...</div>
+         <div class="meta">
+           ${two}${fight}Music: ${esc(m.music ?? "")} &nbsp;|&nbsp; Seed: ${esc(m.seed ?? "")} &nbsp;|&nbsp; Dancers: ${esc((m.characters || []).map(nameOf).join(", "))}<br>
+           Stage: ${esc(m.stage ?? "")} &nbsp;|&nbsp; Lights: ${esc(listOf(m.lights))} &nbsp;|&nbsp; Camera: ${esc(listOf(m.cam_fx))}<br>
+           Rotation: ${esc(listOf(m.rotations))} &nbsp;|&nbsp; Speed: ${esc(m.speed_mode ?? "")} &nbsp;|&nbsp; Cloth: ${esc(m.cloth_mode ?? "")}<br>
+           <a href="${url}" target="_blank" rel="noopener">Direct video link</a>
+         </div>`;
+      $("saveBtn").onclick = e => saveVideo(url, e.currentTarget);
+      saveLocal(url, id, wide, m);
+      $("againBtn").onclick = () => { $("seed").value = Math.floor(Math.random() * 1000000); goTo("sec-chars"); };
+      setBusy(false);
+      return;
+    }
+    if (j.status === "error"){
+      $("err").textContent = "Error: " + j.error;
+      setBusy(false);
+      return;
+    }
+    setTimeout(() => poll(id, 0), 900);
+  }catch(e){
+    // mobile network blip: kuch baar dobara try karo
+    if (fails < 6){
+      $("msg").textContent = "Connection slow hai, dobara try ho raha hai...";
+      return setTimeout(() => poll(id, fails + 1), 2500);
+    }
+    $("err").textContent = "Connection issue: " + e.message;
+    setBusy(false);
+  }
+}
+
+/* ---------- saved videos (IndexedDB) ---------- */
+let _db;
+function vdb(){
+  if (!_db) _db = new Promise((res, rej) => {
+    const r = indexedDB.open("dsVideos", 1);
+    r.onupgradeneeded = () => r.result.createObjectStore("v", {keyPath:"id"});
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+  return _db;
+}
+async function vtx(mode, fn){
+  const db = await vdb();
+  return new Promise((res, rej) => {
+    const t = db.transaction("v", mode); let rq;
+    try{ rq = fn(t.objectStore("v")); }catch(e){ return rej(e); }
+    t.oncomplete = () => res(rq ? rq.result : undefined);
+    t.onerror = t.onabort = () => rej(t.error);
+  });
+}
+const vAll = () => vtx("readonly", s => s.getAll());
+const vPut = rec => vtx("readwrite", s => s.put(rec));
+const vDel = id => vtx("readwrite", s => s.delete(id));
+const vClear = () => vtx("readwrite", s => s.clear());
+/* ---------- saved videos: gallery + full-screen viewer ---------- */
+const gridUrls = [], vUrls = [];
+let gridIO = null, vIO = null, feedMuted = false, SAVED = [], viewerOpen = false, vIdx = 0, SH = null;
+const trackName = n => String(n || "").replace(/^hf\//, "☁ ");
+const recMusic = v => v.music || String(v.info || "").split(" | seed")[0] || "";
+const hasClip = v => typeof v.s === "number" && typeof v.d === "number";
+function findTrack(n){
+  if (!n) return null;
+  const A = LV.music, low = String(n).toLowerCase();
+  return A.find(x => x === n) || A.find(x => x === "hf/" + n) || A.find(x => x.toLowerCase() === low)
+    || A.find(x => x.toLowerCase().endsWith("/" + low)) || null;
+}
+function clipTxt(v){
+  if (hasClip(v)) return fmt(v.s) + " – " + fmt(v.s + v.d) + " (" + Math.round(v.d) + "s)";
+  if (typeof v.d === "number") return "Gaane me random jagah se, " + Math.round(v.d) + "s";
+  return "";
+}
+
+/* gallery grid: touch se page ki tarah scroll hota hai, tap = full screen */
+async function renderSaved(){
+  const box = $("savedList");
+  if (gridIO) gridIO.disconnect();
+  gridUrls.splice(0).forEach(u => URL.revokeObjectURL(u));
+  try{ SAVED = (await vAll()).sort((a, b) => b.t - a.t); }
+  catch(e){ SAVED = []; $("savedCount").textContent = "Storage nahi chal raha"; box.innerHTML = ""; return; }
+  $("savedCount").textContent = SAVED.length + " video";
+  box.innerHTML = "";
+  if (!SAVED.length){ box.appendChild(el("p", "hint empty", "Abhi koi saved video nahi hai.")); return; }
+  gridIO = new IntersectionObserver(es => es.forEach(en => {
+    if (!en.isIntersecting) return;
+    const v = en.target.querySelector("video"); if (v && !v.src) v.src = v.dataset.src;
+    gridIO.unobserve(en.target);
+  }), {rootMargin:"400px"});
+  SAVED.forEach((v, i) => {
+    const u = URL.createObjectURL(v.blob); gridUrls.push(u);
+    const mn = recMusic(v);
+    const c = el("div", "scell" + (v.wide ? " w" : ""),
+      `<video muted playsinline preload="metadata" data-src="${u}#t=0.1"></video><div class="pl">▶</div>${mn ? `<div class="mu">🎵 ${esc(trackName(mn))}</div>` : ""}`);
+    c.tabIndex = 0; c.setAttribute("role", "button"); c.setAttribute("aria-label", "Video " + (i + 1) + " full screen me kholo");
+    c.onclick = () => openViewer(i);
+    box.appendChild(c); gridIO.observe(c);
+  });
+}
+
+/* full-screen viewer: shorts ki tarah upar-neeche swipe */
+function openViewer(start){
+  if (!SAVED.length) return;
+  const vf = $("vfeed");
+  if (vIO) vIO.disconnect();
+  vf.querySelectorAll("video").forEach(x => { x.pause(); x.removeAttribute("src"); x.load(); });
+  vf.innerHTML = "";
+  vUrls.splice(0).forEach(u => URL.revokeObjectURL(u));
+  if (!viewerOpen){ try{ history.pushState({viewer:1}, "", location.href); }catch(_){} }   // phone ka back button viewer band karega
+  viewerOpen = true;
+  $("viewer").classList.add("on"); document.body.classList.add("vopen");
+  vIO = new IntersectionObserver(es => es.forEach(en => {
+    const d = en.target, vid = d.querySelector("video");
+    if (en.isIntersecting){
+      vIdx = +d.dataset.i; $("vcount").textContent = (vIdx + 1) + " / " + SAVED.length;
+      d.classList.remove("paused");
+      const pr = vid.play(); if (pr) pr.catch(() => { vid.muted = true; vid.play().catch(() => {}); });
+    } else vid.pause();
+  }), {root:vf, threshold:.6});
+  const items = SAVED.map((v, i) => {
+    const u = URL.createObjectURL(v.blob); vUrls.push(u);
+    const mn = recMusic(v), ct = clipTxt(v);
+    const d = el("div", "fitem",
+      `<video loop playsinline preload="metadata" src="${u}"></video><div class="fpp">▶</div>
+       <div class="fside"><button type="button" data-a="music" aria-label="Music info">🎵</button><button type="button" data-a="mute" aria-label="Sound">${feedMuted ? "🔇" : "🔊"}</button><button type="button" data-a="dl" aria-label="Save">⬇</button><button type="button" data-a="del" aria-label="Delete">🗑</button></div>
+       <div class="finfo">${mn ? `<button type="button" class="fmusic" data-a="music"><span>🎵 ${esc(trackName(mn))}</span></button>` : `<div>🎵 Music ka naam nahi mila</div>`}${ct ? `<div>⏱ ${esc(ct)}</div>` : ""}<div style="opacity:.8;font-weight:600">${esc(new Date(v.t).toLocaleString())}</div></div><div class="fbar"></div>`);
+    d.dataset.i = i;
+    const vid = d.querySelector("video"), bar = d.querySelector(".fbar");
+    vid.muted = feedMuted;
+    vid.ontimeupdate = () => { bar.style.width = (vid.currentTime / (vid.duration || 1) * 100) + "%"; };
+    d.onclick = e => {
+      const b = e.target.closest("button");
+      if (!b){ if (vid.paused){ d.classList.remove("paused"); vid.play().catch(() => {}); } else { vid.pause(); d.classList.add("paused"); } return; }
+      const a = b.dataset.a;
+      if (a === "mute"){ feedMuted = !feedMuted; vf.querySelectorAll("video").forEach(x => { x.muted = feedMuted; }); vf.querySelectorAll('[data-a="mute"]').forEach(x => { x.textContent = feedMuted ? "🔇" : "🔊"; }); }
+      else if (a === "dl"){ const l = el("a"); l.href = u; l.download = "dance_" + v.id + ".mp4"; document.body.appendChild(l); l.click(); l.remove(); }
+      else if (a === "music") openSheet(v);
+      else if (a === "del"){
+        if (!confirm("Ye video delete karna hai?")) return;
+        vDel(v.id).catch(() => {}).then(async () => { await renderSaved(); if (!SAVED.length) closeViewer(); else openViewer(Math.min(i, SAVED.length - 1)); });
+      }
+    };
+    vf.appendChild(d);
+    return d;
+  });
+  vf.scrollTop = Math.min(start, items.length - 1) * vf.clientHeight;
+  items.forEach(d => vIO.observe(d));
+}
+function hideViewer(){
+  if (!viewerOpen) return;
+  viewerOpen = false;
+  closeSheet(true);
+  if (vIO){ vIO.disconnect(); vIO = null; }
+  const vf = $("vfeed");
+  vf.querySelectorAll("video").forEach(x => { x.pause(); x.removeAttribute("src"); x.load(); });
+  vf.innerHTML = "";
+  vUrls.splice(0).forEach(u => URL.revokeObjectURL(u));
+  $("viewer").classList.remove("on"); document.body.classList.remove("vopen");
+  const cell = $("savedList").children[vIdx];
+  if (cell && cell.scrollIntoView && $("sec-saved") && !$("sec-saved").classList.contains("tabhide")) cell.scrollIntoView({block:"center"});
+}
+function closeViewer(){
+  if (!viewerOpen) return;
+  if (history.state && history.state.viewer) history.back(); else hideViewer();
+}
+window.addEventListener("popstate", () => { if (viewerOpen) hideViewer(); });
+$("vclose").onclick = closeViewer;
+document.addEventListener("keydown", e => {
+  if (!viewerOpen) return;
+  if (e.key === "Escape"){ $("msheet").classList.contains("on") ? closeSheet() : closeViewer(); }
+  else if ((e.key === "ArrowDown" || e.key === "ArrowUp") && !$("msheet").classList.contains("on")){
+    e.preventDefault(); const vf = $("vfeed"); vf.scrollBy({top:(e.key === "ArrowDown" ? 1 : -1) * vf.clientHeight, behavior:"smooth"});
+  }
+});
+
+/* mouse se bhi drag karke scroll: viewer me video badlo, gallery me page scroll */
+let swallowClick = false;
+document.addEventListener("click", e => { if (swallowClick){ e.stopPropagation(); e.preventDefault(); } }, true);
+function mouseDrag(area, start, move, end){
+  let d = null;
+  area.addEventListener("pointerdown", e => {
+    if (e.pointerType !== "mouse" || e.button !== 0 || e.target.closest("button")) return;
+    d = {y:e.clientY, last:e.clientY, moved:false, t:start()};
+  });
+  window.addEventListener("pointermove", e => {
+    if (!d) return;
+    if (!d.moved && Math.abs(e.clientY - d.y) < 6) return;
+    d.moved = true; e.preventDefault();
+    move(d, e.clientY); d.last = e.clientY;
+  });
+  const up = () => {
+    if (!d) return;
+    const x = d; d = null;
+    if (x.moved){ end(x); swallowClick = true; setTimeout(() => { swallowClick = false; }, 0); }
+  };
+  window.addEventListener("pointerup", up); window.addEventListener("pointercancel", up);
+}
+{
+  const vf = $("vfeed");
+  mouseDrag(vf, () => { vf.style.scrollSnapType = "none"; return vf.scrollTop; },
+    (d, y) => { vf.scrollTop = d.t - (y - d.y); },
+    d => {
+      const h = vf.clientHeight, dy = d.last - d.y, n = Math.round(d.t / h), max = Math.max(0, SAVED.length - 1);
+      const to = Math.min(max, Math.max(0, dy < -60 ? n + 1 : dy > 60 ? n - 1 : Math.round(vf.scrollTop / h)));
+      vf.style.scrollSnapType = ""; vf.scrollTo({top:to * h, behavior:"smooth"});
+    });
+  const step = k => vf.scrollBy({top:k * vf.clientHeight, behavior:"smooth"});
+  $("vup").onclick = () => step(-1); $("vdn").onclick = () => step(1);
+  mouseDrag($("savedList"), () => null,
+    (d, y) => { window.scrollTo({top:window.scrollY - (y - d.last), behavior:"instant"}); },
+    () => {});
+}
+
+/* music track sheet: is short me kaunsa gaana / hissa laga tha */
+function openSheet(v){
+  SH = v;
+  const mn = recMusic(v), tr = findTrack(mn), ct = clipTxt(v), hc = hasClip(v);
+  const d = $("vfeed").children[vIdx], vid = d && d.querySelector("video"); if (vid) vid.pause();
+  $("mbox").innerHTML = `<h3>🎵 Is short ka music</h3>
+    <div class="mname">${mn ? esc(trackName(mn)) : "Naam pata nahi"}</div>
+    <div class="mclip">${ct ? "⏱ " + esc(ct) : "Hissa (start / length) ka record nahi hai"}</div>
+    ${tr ? "" : `<p class="hint" style="margin:0 0 10px">${mn ? "Ye gaana library me nahi mila (shayad apna upload kiya tha), isliye sunna / library me kholna possible nahi." : "Ye video purana hai, music ka record save nahi hua tha."}</p>`}
+    <div class="macts">
+      <button type="button" data-m="hear"${tr ? "" : " disabled"}>▶ Ye hissa sunao</button>
+      <button type="button" data-m="lib"${tr ? "" : " disabled"}>📚 Library me kholo (waveform par)</button>
+      <button type="button" data-m="use"${tr ? "" : " disabled"}>✅ Naye video ke liye ye music + hissa lo</button>
+      <button type="button" data-m="clip"${tr && hc ? "" : " disabled"}>💾 Clip save karo</button>
+      <button type="button" data-m="close">Band karo</button>
+    </div><div class="mmsg" role="status"></div>`;
+  $("msheet").classList.add("on");
+}
+function closeSheet(silent){
+  if (clipPlay && clipPlay.id === "vw") stopClip();
+  $("msheet").classList.remove("on");
+  const d = viewerOpen && $("vfeed").children[vIdx];
+  if (!silent && d && !d.classList.contains("paused")){ const vid = d.querySelector("video"); if (vid) vid.play().catch(() => {}); }
+  SH = null;
+}
+function showInLibrary(n, v){
+  hideViewer(); stopClip();
+  goTo("sec-lib"); showLibTab("music");
+  const P = LP.music; P.q = n; P.inp.value = n; P.folder = ""; P.liked = false;
+  drawPanel(P);
+  const find = () => [...P.box.children].find(r => r.dataset.n === n);
+  let row = find();
+  while (!row && P.shown < P.rows.length){ addChunk(P); row = find(); }
+  if (!row) return;
+  if (hasClip(v)) TRIM[n] = {s:v.s, e:v.s + v.d};
+  openPlayer(row);
+}
+$("msheet").onclick = e => {
+  if (e.target === $("msheet")) return closeSheet();
+  const b = e.target.closest("[data-m]"); if (!b || !SH) return;
+  const v = SH, tr = findTrack(recMusic(v)), m = b.dataset.m, msg = $("mbox").querySelector(".mmsg");
+  if (m === "close") return closeSheet();
+  if (!tr) return;
+  if (m === "hear"){
+    playClip({id:"vw", n:tr, s:hasClip(v) ? v.s : 0, e:hasClip(v) ? v.s + v.d : 1e9});
+    b.textContent = clipPlay ? "⏸ Roko" : "▶ Ye hissa sunao";
+  } else if (m === "lib") showInLibrary(tr, v);
+  else if (m === "use"){
+    if (hasClip(v)){
+      TRIM[tr] = {s:v.s, e:v.s + v.d};
+      $("start").value = v.s; $("startRnd").checked = false; $("start").disabled = false;
+      $("duration").value = Math.round(v.d * 10) / 10;
+    }
+    pickLib("music", tr);
+    msg.textContent = "✅ Audio card me music set ho gaya.";
+  } else if (m === "clip"){
+    msg.textContent = addClip(tr, v.s, v.s + v.d) ? "✅ Clip save ho gayi (Library ➜ ✂ Clips)." : "Ye clip pehle se saved hai.";
+  }
+};
+$("savedClear").onclick = async () => {
+  if (!confirm("Saare saved videos delete ho jayenge. Pakka?")) return;
+  try{ await vClear(); }catch(_){}
+  renderSaved();
+};
+async function saveLocal(url, id, wide, m){
+  const note = $("saveNote");
+  try{
+    const r = await fetch(url);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const blob = await r.blob();
+    const q = window.__req || {}, num = x => (x === "" || x == null || isNaN(+x)) ? null : +x;
+    let st = num(m.start); if (st == null || st < 0) st = q.rnd ? null : num(q.start);
+    const du = num(m.duration) ?? num(q.dur);
+    await vPut({id, t:Date.now(), blob, wide, info:(m.music || "") + " | seed " + (m.seed ?? ""),
+                music:m.music || q.music || "", s:st, d:du});
+    if (note) note.textContent = "✅ Local storage me save ho gaya (Saved section me dekho)";
+    renderSaved();
+  }catch(e){ if (note) note.textContent = "Local save nahi hua: " + e.message; }
+}
+renderSaved();
+
+/* ================= 3D Horror Game ================= */
+Object.assign(state, {g_player:"random", g_mansion:"random", g_escape:"random", g_weapon:"", g_out:"auto"});
+multi.g_killers = {set:new Set(), rnd:true};
+multi.g_rooms   = {set:new Set(), rnd:true};
+let GOPT = null;
+const OUT_LABEL = {auto:["Auto","Lamba video me kabhi kabhi OUT"], always:["Hamesha","Player OUT, game over"], never:["Kabhi nahi","Player kabhi OUT nahi"]};
+const gName = (list, id) => { const x = (list || []).find(i => i.id === id); return x ? x.name : id; };
+
+async function loadGame(){
+  const note = $("gameNote");
+  try{
+    const o = await fetchJSON("/api/game/options", 2);
+    GOPT = o;
+    note.style.display = "none"; $("gameBody").style.display = "block";
+    const rnd = {id:"random", name:"Random", rnd:true};
+    buildSingle("gPlayer", [rnd, ...o.players.map(p => ({id:p.id, name:p.name, preview:"/api/game/preview/player/" + p.id}))], "g_player", true);
+    buildMulti("gKillers", o.killers.map(k => ({id:k.id, name:k.name, preview:"/api/game/preview/killer/" + k.id})), "g_killers", true);
+    buildSingle("gMansion", [rnd, ...o.mansions.map(m => ({id:m.id, name:m.name}))], "g_mansion", false);
+    buildMulti("gRooms", o.rooms.map(r => ({id:r.id, name:r.name})), "g_rooms", false);
+    buildSingle("gEscape", [rnd, ...o.escapes.map(e => ({id:e.id, name:e.name}))], "g_escape", false);
+    buildSingle("gWeapon", [{id:"", name:"Auto", sub:"Character ka apna"}, ...o.weapons.map(w => ({id:w.id, name:wname(w)}))], "g_weapon", false);
+    buildSingle("gOut", o.out_modes.map(m => ({id:m, name:(OUT_LABEL[m] || [m])[0], sub:(OUT_LABEL[m] || [])[1] || ""})), "g_out", false);
+  }catch(e){
+    $("gameBody").style.display = "none";
+    note.textContent = "Game module server par load nahi hua (3d_game_type.py upload aur app.py me include_router check karo): " + e.message;
+    note.style.display = "block";
+  }
+}
+$("g_dice").onclick = () => { $("g_seed").value = Math.floor(Math.random() * 1000000); };
+$("g_vol").oninput = e => { $("g_volV").textContent = (+e.target.value).toFixed(1) + "x"; };
+
+$("g_go").onclick = async () => {
+  const bar = $("g_bar"), msg = $("g_msg"), err = $("g_err");
+  $("g_prog").style.display = "block";
+  err.textContent = ""; $("g_result").innerHTML = ""; bar.style.width = "0%"; msg.textContent = "Server ko bhej raha hoon...";
+  $("g_go").disabled = true;
+  const wide = (() => { const [w, h] = $("g_res").value.split("x").map(Number); return w > h; })();
+  const fd = new FormData();
+  fd.append("player", state.g_player);
+  fd.append("killers", multiVal("g_killers"));
+  fd.append("mansion", state.g_mansion);
+  fd.append("rooms", $("g_rooms").value);
+  fd.append("room_keys", multi.g_rooms.rnd ? "" : [...multi.g_rooms.set].join(","));
+  fd.append("lives", $("g_lives").value);
+  fd.append("shoot", $("g_shoot").checked ? 1 : 0);
+  fd.append("weapon", state.g_weapon);
+  fd.append("escape", state.g_escape);
+  fd.append("out", state.g_out);
+  fd.append("duration", $("g_dur").value || 60);
+  fd.append("res", $("g_res").value);
+  fd.append("fps", $("g_fps").value);
+  fd.append("seed", $("g_seed").value === "" ? -1 : $("g_seed").value);
+  fd.append("sound", $("g_sound").checked ? 1 : 0);
+  fd.append("volume", $("g_vol").value);
+  try{
+    const r = await fetch(API + "/api/game/generate", {method:"POST", body:fd});
+    const j = await r.json().catch(() => null);
+    if (!r.ok || !j) throw new Error((j && (typeof j.detail === "string" ? j.detail : JSON.stringify(j.detail))) || ("HTTP " + r.status));
+    gPoll(j.job_id, j, wide, 0);
+  }catch(e){
+    err.textContent = "Error: " + e.message; msg.textContent = ""; $("g_go").disabled = false;
+  }
+};
+
+async function gPoll(id, meta, wide, fails){
+  const bar = $("g_bar"), msg = $("g_msg"), err = $("g_err");
+  try{
+    const r = await fetch(API + "/api/game/status/" + id);
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const j = await r.json();
+    bar.style.width = Math.round((j.progress || 0) * 100) + "%";
+    msg.textContent = j.message || "";
+    if (j.status === "done"){
+      const url = API + "/api/game/video/" + id, o = GOPT || {};
+      const info = j.info || {};
+      $("g_result").innerHTML =
+        `<video controls playsinline preload="metadata" class="${wide ? "wide" : ""}" src="${url}" style="width:100%;max-width:${wide ? 640 : 340}px;border:6px solid #fffefb;border-radius:6px;background:#000;display:block;margin:0 auto 16px"></video>
+         <div class="resbtns"><button class="go" id="g_save" type="button">⬇ Download / Share</button></div>
+         <div class="hint" id="g_note" style="margin-top:10px">Saved section me save ho raha hai...</div>
+         <div class="meta">Player: ${esc(gName(o.players, meta.player))} &nbsp;|&nbsp; Killers: ${esc((meta.killers || []).map(k => gName(o.killers, k)).join(", "))}<br>
+           Mahal: ${esc(gName(o.mansions, meta.mansion))} &nbsp;|&nbsp; Rooms: ${esc((meta.rooms || []).map(k => gName(o.rooms, k)).join(", "))}<br>
+           Escape: ${esc(gName(o.escapes, meta.escape))} &nbsp;|&nbsp; Lives: ${esc(meta.lives)} &nbsp;|&nbsp; Seed: ${esc(meta.seed)}<br>
+           Result: ${info.died ? "Player OUT - GAME OVER" : "Player escape ho gaya"} &nbsp;|&nbsp; Length: ${esc(info.duration ?? "")}s</div>`;
+      $("g_save").onclick = e => saveVideo(url, e.currentTarget);
+      $("g_go").disabled = false;
+      gSaveLocal(url, id, wide, meta);
+      return;
+    }
+    if (j.status === "error"){ err.textContent = "Error: " + j.error; $("g_go").disabled = false; return; }
+    setTimeout(() => gPoll(id, meta, wide, 0), 1200);
+  }catch(e){
+    if (fails < 6){ msg.textContent = "Connection slow hai, dobara try ho raha hai..."; return setTimeout(() => gPoll(id, meta, wide, fails + 1), 2500); }
+    err.textContent = "Connection issue: " + e.message; $("g_go").disabled = false;
+  }
+}
+async function gSaveLocal(url, id, wide, meta){
+  const note = $("g_note");
+  try{
+    const r = await fetch(url); if (!r.ok) throw new Error("HTTP " + r.status);
+    await vPut({id:"g" + id, t:Date.now(), blob:await r.blob(), wide, info:"3D Horror Game | seed " + (meta.seed ?? ""), music:"", s:null, d:null});
+    if (note) note.textContent = "✅ Saved section me save ho gaya";
+    renderSaved();
+  }catch(e){ if (note) note.textContent = "Local save nahi hua: " + e.message; }
+}
+
+{ const h = location.hash.slice(1); goTo(SECTIONS.includes(h) ? h : "sec-chars"); }
+connect();
+</script>
+</body>
+</html>
