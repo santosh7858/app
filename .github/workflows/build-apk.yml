@@ -52,8 +52,11 @@ jobs:
         run: |
           D=android/app/src/main/java/com/danceshorts/studio
           mkdir -p $D
-          cp android-plugin/YtViewPlugin.java $D/YtViewPlugin.java
-          cp android-plugin/MainActivity.java $D/MainActivity.java
+          for f in YtViewPlugin.java MainActivity.java; do
+            if [ -f "$f" ]; then cp "$f" "$D/$f";
+            elif [ -f "android-plugin/$f" ]; then cp "android-plugin/$f" "$D/$f";
+            else echo "ERROR: $f repo me nahi mili (root me rakho)"; exit 1; fi
+          done
 
       - name: Add permissions
         run: |
