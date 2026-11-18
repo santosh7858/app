@@ -34,14 +34,26 @@ jobs:
         run: |
           mkdir -p assets
           if [ -f icon.png ]; then
+            echo "Custom icon.png use ho raha hai"
             cp icon.png assets/icon.png
           else
             pip install pillow
-            python tools/make_icon.py assets/icon.png
+            if [ -f tools/make_icon.py ]; then
+              python tools/make_icon.py assets/icon.png
+            else
+              python make_icon.py assets/icon.png
+            fi
           fi
 
       - name: Add Android platform
         run: npx cap add android
+
+      - name: Add YouTube native view plugin
+        run: |
+          D=android/app/src/main/java/com/danceshorts/studio
+          mkdir -p $D
+          cp android-plugin/YtViewPlugin.java $D/YtViewPlugin.java
+          cp android-plugin/MainActivity.java $D/MainActivity.java
 
       - name: Add permissions
         run: |
