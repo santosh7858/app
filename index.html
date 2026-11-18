@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#fff8ec">
+<title>Loading app...</title>
+<style>html,body{margin:0;min-height:100%;font-family:system-ui,sans-serif;background:#fff8ec;color:#1d1b26}#boot{max-width:560px;margin:18vh auto;padding:24px;text-align:center}#boot h2{font-size:22px}#boot p{line-height:1.5}#boot button{padding:10px 16px;border:2px solid #1d1b26;border-radius:10px;background:#ffd23f;font-weight:700}#appRoot{min-height:100vh}</style>
+</head>
+<body>
+<div id="boot"><h2>Dance Shorts Studio</h2><p id="bootMsg">App structure JSON load ho raha hai...</p></div>
+<div id="appRoot"></div>
+<script>
+(function(){
+'use strict';
+var URLS=[
+'https://huggingface.co/spaces/maksudanyadav814/story_writer_ai/resolve/main/app_structure.json',
+'https://huggingface.co/spaces/maksudanyadav814/story_writer_ai/raw/main/app_structure.json'
+];
+var CACHE_KEY='ds_app_structure_v2';
+var root=document.getElementById('appRoot'),boot=document.getElementById('boot'),msg=document.getElementById('bootMsg');
+var started=false;
+
+function valid(c){return !!c&&c.schema===2&&typeof c.html==='string'&&typeof c.css==='string'&&typeof c.js==='string';}
+
+function readCache(){
+  try{
+    var raw=localStorage.getItem(CACHE_KEY);
+    if(!raw)return null;
+    var c=JSON.parse(raw);
+    return valid(c)?c:null;
+  }catch(e){return null;}
+}
+function saveCache(c){
+  try{localStorage.setItem(CACHE_KEY,JSON.stringify(c));return true;}catch(e){return false;}
+}
+
+function fail(){
+  boot.innerHTML='<h2>App load nahi hua</h2><p>Internet nahi hai aur phone me pehle se saved app bhi nahi mili. Ek baar internet on karke app kholein, uske baad ye offline bhi chalega.</p><button onclick="location.reload()">Retry</button>';
+  root.replaceChildren();
+}
+
+function start(c){
+  if(started)return;
+  started=true;
+  document.title=(c.app&&c.app.title)||'App';
+  var m=document.querySelector('meta[name="theme-color"]');
+  if(m&&c.app&&c.app.theme_color)m.content=c.app.theme_color;
+  var style=document.createElement('style');
+  style.textContent=c.css;
+  document.head.appendChild(style);
+  root.innerHTML=c.html;
+  boot.remove();
+  window.__DS_API=(c.settings&&c.settings.api)||'';
+  var s=document.createElement('script');
+  s.textContent=c.js+'\n//# sourceURL=app_structure.json';
+  document.body.appendChild(s);
+}
+
+function fetchRemote(i,done,failed){
+  if(i>=URLS.length){failed();return;}
+  fetch(URLS[i]+'?t='+Date.now(),{cache:'no-store'})
+    .then(function(r){if(!r.ok)throw Error('HTTP '+r.status);return r.json();})
+    .then(function(c){if(!valid(c))throw Error('Invalid JSON structure');done(c);})
+    .catch(function(){fetchRemote(i+1,done,failed);});
+}
+
+var cached=readCache();
+
+if(cached){
+  // Saved copy mili: turant dikhao (offline me bhi chalega)
+  start(cached);
+  // Background me naya version check karke cache update karo (agle open par apply hoga)
+  if(navigator.onLine!==false){
+    fetchRemote(0,function(c){saveCache(c);},function(){});
+  }
+}else{
+  // Pehli baar: network se lao, cache me save karo, phir dikhao
+  fetchRemote(0,function(c){saveCache(c);start(c);},fail);
+}
+})();
+</script>
+</body>
+</html>
