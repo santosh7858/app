@@ -52,7 +52,7 @@ jobs:
         run: |
           D=android/app/src/main/java/com/danceshorts/studio
           mkdir -p $D
-          for f in YtViewPlugin.java MainActivity.java; do
+          for f in YtViewPlugin.java DsMediaPlugin.java MainActivity.java; do
             if [ -f "$f" ]; then cp "$f" "$D/$f";
             elif [ -f "android-plugin/$f" ]; then cp "android-plugin/$f" "$D/$f";
             else echo "ERROR: $f repo me nahi mili (root me rakho)"; exit 1; fi
@@ -61,7 +61,9 @@ jobs:
       - name: Add permissions
         run: |
           MF=android/app/src/main/AndroidManifest.xml
-          sed -i 's#<application#<uses-permission android:name="android.permission.CAMERA"/>\n    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>\n    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>\n    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>\n    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>\n    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29"/>\n    <uses-feature android:name="android.hardware.camera" android:required="false"/>\n    <application#' $MF
+          PERMS='<uses-permission android:name="android.permission.CAMERA"/>\n    <uses-permission android:name="android.permission.RECORD_AUDIO"/>\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>\n    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>\n    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>\n    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>\n    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED"/>\n    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>\n    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29"/>\n    <uses-feature android:name="android.hardware.camera" android:required="false"/>\n    <uses-feature android:name="android.hardware.microphone" android:required="false"/>\n    <application android:requestLegacyExternalStorage="true"'
+          sed -i "s#<application#${PERMS}#" $MF
+          cat $MF
 
       - name: Generate icons
         run: npx capacitor-assets generate --android --iconBackgroundColor '#ffd23f' --iconBackgroundColorDark '#ffd23f'
