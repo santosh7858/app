@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -41,6 +42,9 @@ public class YtViewPlugin extends Plugin {
         s.setMediaPlaybackRequiresUserGesture(false);
         s.setLoadWithOverviewMode(true);
         s.setUseWideViewPort(true);
+        // Normal Chrome jaisa user-agent (WebView marker "wv" hata do) taaki Google login chal sake
+        String ua = s.getUserAgentString();
+        s.setUserAgentString(ua.replace("; wv", "").replace("Version/4.0 ", ""));
 
         CookieManager cm = CookieManager.getInstance();
         cm.setAcceptCookie(true);
@@ -56,6 +60,12 @@ public class YtViewPlugin extends Plugin {
         });
 
         yt.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onPermissionRequest(final PermissionRequest request) {
+                // mic / camera (YouTube voice search etc.)
+                getActivity().runOnUiThread(() -> request.grant(request.getResources()));
+            }
+
             @Override
             public void onShowCustomView(View view, CustomViewCallback cb) {
                 if (customView != null) { cb.onCustomViewHidden(); return; }
@@ -98,6 +108,7 @@ public class YtViewPlugin extends Plugin {
     @PluginMethod
     public void show(final PluginCall call) {
         final int bottom = call.getInt("bottom", 0);
+        final int top = call.getInt("top", 0);
         final String url = call.getString("url", "https://m.youtube.com/");
         getActivity().runOnUiThread(() -> {
             try {
@@ -105,6 +116,7 @@ public class YtViewPlugin extends Plugin {
                 if (yt == null) create(parent, url);
                 ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) yt.getLayoutParams();
                 lp.bottomMargin = bottom;
+                lp.topMargin = top;
                 yt.setLayoutParams(lp);
                 yt.setVisibility(View.VISIBLE);
                 yt.onResume();
@@ -123,6 +135,7 @@ public class YtViewPlugin extends Plugin {
             if (yt != null) {
                 yt.setVisibility(View.GONE);
                 yt.onPause();
+                CookieManager.getInstance().flush(); // login saved rahe
             }
             call.resolve();
         });

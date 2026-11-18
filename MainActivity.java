@@ -7,6 +7,7 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         registerPlugin(YtViewPlugin.class);
+        registerPlugin(DsMediaPlugin.class);
         super.onCreate(savedInstanceState);
     }
 }
